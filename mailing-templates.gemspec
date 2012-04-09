@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.version     = MailingTemplates::VERSION
   s.authors     = ["Denis Lifanov, Dmitry Afanasyev"]
   s.email       = ["inadsence@gmail.com", "dimarzio1986@gmail.com"]
-  s.homepage    = "TODO"
+  s.homepage    = "https://github.com/prophotos/mailing-templates"
   s.summary     = "Mailing Templates."
   s.description = "Liquid-based mailing templates, incl. CSS-processing."
 
