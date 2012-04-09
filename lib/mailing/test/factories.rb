@@ -2,8 +2,8 @@ if defined?(::Factory)
 
   Factory.define :simple_mailing_template, class: 'Mailing::Template' do |f|
 
-    f.mailer    "TestMailer"
-    f.action    "test"
+    f.mailer    "Mailing::TestMailer"
+    f.action    "simple"
     f.body_html "The quick brown {{ fox }} jumps over the lazy {{ dog }}."
     f.body_text "The quick brown {{ fox }} jumps over the lazy {{ dog }}."
     f.subject   "The quick brown {{ fox }} jumps over the lazy {{ dog }}."
@@ -14,10 +14,3 @@ if defined?(::Factory)
 
   end
 end
-
-
-#class TestMailer < ActionMailer::Base
-#  def test(fox, dog)
-#    render_template 'user@example.org', fox, dog
-#  end
-#end
