@@ -60,4 +60,8 @@ module Mailing
     @@html_layouts = nil
   end
 
+  def self.asset_provider
+    @@asset_provider ||= Mailing::AssetProvider.new(Roadie.current_provider.prefix)
+  end
+
 end

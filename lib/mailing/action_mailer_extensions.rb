@@ -17,11 +17,9 @@ module Mailing
       if template && (testing? || template.enabled?)
         options = args.extract_options!
         options = options.merge(template.mailing_options(recipient, *args))
+        options[:css] = associated_stylesheets unless template.only_text?
         mail(options) do |format|
-          unless template.only_text?
-            options[:css] = [Mailing.default_css, template.layout_html].compact
-            format.html { render text: template.render_body_html(*args), layout: template.layout_html_path } 
-          end
+          format.html { render text: template.render_body_html(*args), layout: template.layout_html_path } unless template.only_text?
           format.text { render text: template.render_body_text(*args), layout: template.layout_text_path }
         end
       elsif template
@@ -42,6 +40,13 @@ module Mailing
 
     def disable_delivery!
       message.perform_deliveries = false
+    end
+
+    def associated_stylesheets
+      stylesheets = Array(Mailing.default_css)
+      stylesheets << template.layout_html unless template.layout_html.blank?
+      stylesheets.map! { |s| File.join(Mailing.css_path, s) }
+      stylesheets.select { |s| Mailing.asset_provider.exists?(s) }
     end
 
     def testing?

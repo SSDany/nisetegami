@@ -16,7 +16,7 @@ Mailing.configure do |config|
 
   # Stylesheets
   # config.css_path     = 'mailing' # results in app/assets/stylesheets/mailing
-  # config.default_css  = :email
+  # config.default_css  = [:default, :email]
 
   # Validations
   # config.addresses_regexp = '[^@]+@([^@\.]+\.)+[^@\.]+'
