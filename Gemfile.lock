@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mailing (0.3.0)
+    mailing-templates (0.3.0)
       liquid
       rails (~> 3.2.2)
       roadie (>= 2.3.1)
@@ -42,7 +42,13 @@ GEM
     css_parser (1.2.6)
       addressable
       rdoc
+    diff-lcs (1.1.3)
     erubis (2.7.0)
+    factory_girl (2.6.4)
+      activesupport (>= 2.3.9)
+    factory_girl_rails (1.7.0)
+      factory_girl (~> 2.6.0)
+      railties (>= 3.0.0)
     hike (1.2.1)
     i18n (0.6.0)
     journey (1.0.3)
@@ -89,6 +95,19 @@ GEM
       css_parser
       nokogiri (>= 1.4.4)
       sprockets
+    rspec (2.9.0)
+      rspec-core (~> 2.9.0)
+      rspec-expectations (~> 2.9.0)
+      rspec-mocks (~> 2.9.0)
+    rspec-core (2.9.0)
+    rspec-expectations (2.9.0)
+      diff-lcs (~> 1.1.3)
+    rspec-mocks (2.9.0)
+    rspec-rails (2.9.0)
+      actionpack (>= 3.0)
+      activesupport (>= 3.0)
+      railties (>= 3.0)
+      rspec (~> 2.9.0)
     sprockets (2.1.2)
       hike (~> 1.2)
       rack (~> 1.0)
@@ -105,6 +124,10 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  factory_girl_rails
   jquery-rails
-  mailing!
+  mailing-templates!
+  rails (~> 3.2.0)
+  rspec (>= 2.8.0)
+  rspec-rails (>= 2.8.1)
   sqlite3
