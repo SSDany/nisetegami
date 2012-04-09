@@ -11,7 +11,7 @@ describe Mailing::ActionMailerExtensions do
     context "when template disabled" do
       before(:each) do
         @template.update_attributes(enabled: false)
-        @message = Mailing::TestMailer.simple('fox', 'dog')
+        @message = Mailing::TestMailer.send(@template.action, 'fox', 'dog')
       end
 
       specify { @template.should_not be_enabled }
@@ -21,7 +21,7 @@ describe Mailing::ActionMailerExtensions do
     context "when template enabled" do
       before(:each) do
         @template.update_attributes(enabled: true)
-        @message = Mailing::TestMailer.simple('fox', 'dog')
+        @message = Mailing::TestMailer.send(@template.action, 'fox', 'dog')
       end
 
       specify { @template.should be_enabled }
@@ -35,7 +35,7 @@ describe Mailing::ActionMailerExtensions do
     context "when template disabled" do
       before(:each) do
         @template.update_attributes(enabled: false)
-        @message = Mailing::TestMailer.simple('fox', 'dog')
+        @message = Mailing::TestMailer.send(@template.action, 'fox', 'dog')
       end
 
       specify { @template.should_not be_enabled }
@@ -45,7 +45,7 @@ describe Mailing::ActionMailerExtensions do
     context "when template enabled" do
       before(:each) do
         @template.update_attributes(enabled: true)
-        @message = Mailing::TestMailer.simple('fox', 'dog')
+        @message = Mailing::TestMailer.send(@template.action, 'fox', 'dog')
       end
 
       specify { @template.should be_enabled }
