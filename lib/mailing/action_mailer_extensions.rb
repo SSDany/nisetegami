@@ -24,7 +24,7 @@ module Mailing
           end
           format.text { render text: template.render_body_text(*args), layout: template.layout_text_path }
         end
-      elsif mailing_template
+      elsif template
         disable_delivery!
       else
         raise Exceptions::MissingTemplateError.new(self)
