@@ -7,7 +7,7 @@ require "mailing/version"
 Gem::Specification.new do |s|
   s.name        = "mailing-templates"
   s.version     = MailingTemplates::VERSION
-  s.authors     = ["Denis Lifanov, Dmitry Afanasyev"]
+  s.authors     = ["Denis Lifanov", "Dmitry Afanasyev"]
   s.email       = ["inadsence@gmail.com", "dimarzio1986@gmail.com"]
   s.homepage    = "https://github.com/prophotos/mailing-templates"
   s.summary     = "Mailing Templates."
