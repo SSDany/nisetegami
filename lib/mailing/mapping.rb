@@ -9,12 +9,16 @@ module Mailing
       @mapping = {}
     end
 
-    def register(mailer, action, locals = {})
+    def register(mailer, action, *locals)
       mailer = mailer.camelize
       unless action_exists?(mailer, action)
         raise Exceptions::UnknownActionError.new(mailer, action)
       end
-      @mapping["#{mailer}#{SEPARATOR}#{action}"] = locals.stringify_keys
+      locals_with_types = locals.inject(locals.extract_options!) do |hsh, var|
+        hsh[var] = var.to_s.classify
+        hsh
+      end
+      @mapping["#{mailer}#{SEPARATOR}#{action}"] = locals_with_types.stringify_keys
       @mailers << mailer
     end
 

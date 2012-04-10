@@ -3,8 +3,8 @@ require 'mailing'
 Mailing.configure do |config|
 
   # Mapping
-  # config.register 'UserMailer', :signup, user: 'User', temporary_password: 'String'
-  # config.register 'UserMailer', :notice, user: 'User', notice: 'String'
+  # config.register 'UserMailer', :signup, user, temporary_password: 'String'
+  # config.register 'UserMailer', :notice, user, notice: 'String'
 
   # Layouts
   # You should create your own layouts wherever you want
