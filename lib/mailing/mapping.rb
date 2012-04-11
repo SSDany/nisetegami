@@ -14,11 +14,12 @@ module Mailing
       unless action_exists?(mailer, action)
         raise Exceptions::UnknownActionError.new(mailer, action)
       end
-      locals_with_types = locals.inject(locals.extract_options!) do |hsh, var|
-        hsh[var] = var.to_s.classify
-        hsh
+      locals_with_types = locals.each_with_object(locals.extract_options!.stringify_keys) do |var, hsh|
+        klass = var.to_s.classify
+        # treat variables as strings by default
+        hsh[var.to_s] = Module.const_defined?(klass) ? klass : 'String'
       end
-      @mapping["#{mailer}#{SEPARATOR}#{action}"] = locals_with_types.stringify_keys
+      @mapping["#{mailer}#{SEPARATOR}#{action}"] = locals_with_types
       @mailers << mailer
     end
 
