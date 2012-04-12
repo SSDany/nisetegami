@@ -103,7 +103,17 @@ class Mailing::Template < ActiveRecord::Base
     self.mailer.testing(self.action, recipient, *variables)
   end
 
+  def test_message(recipient, variables_hash)
+    message(recipient, *hash_to_mashes(variables_hash)).deliver
+  end
+
   private
+
+  def hash_to_mashes(hash)
+    hash.each_with_object([]) do |(_, value), variables|
+      variables << (value.respond_to?(:keys) ? Hashie::Mash.new(value) : value)
+    end
+  end
 
   def prepare_locals(*variables)
     Hash[variable_names.zip(variables)]
