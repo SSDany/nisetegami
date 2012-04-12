@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'rails',   '~> 3.2.2'
   s.add_dependency 'roadie',  '>= 2.3.1'
   s.add_dependency 'liquid'
+  s.add_dependency 'hashie'
 
   s.add_development_dependency 'sqlite3'
   s.add_development_dependency 'rails', '~>3.2.0'

@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     mailing-templates (0.3.0)
+      hashie
       liquid
       rails (~> 3.2.2)
       roadie (>= 2.3.1)
@@ -49,6 +50,7 @@ GEM
     factory_girl_rails (1.7.0)
       factory_girl (~> 2.6.0)
       railties (>= 3.0.0)
+    hashie (1.2.0)
     hike (1.2.1)
     i18n (0.6.0)
     journey (1.0.3)

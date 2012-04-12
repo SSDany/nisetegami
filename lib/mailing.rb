@@ -1,5 +1,6 @@
 require 'roadie'
 require 'liquid'
+require 'hashie'
 
 require 'mailing/action_mailer_extensions'
 require 'mailing/asset_provider'
