@@ -63,12 +63,13 @@ class Mailing::Template < ActiveRecord::Base
   end
 
   def variable_mapping
-    @_variable_mapping ||= begin
-      mapping.each_with_object([]) do |(variable, thing), array|
-        meths = Mailing::Utils.liquid_methods_for(thing.constantize)
-        array << (meths.blank? ? variable.to_sym : { variable.to_sym => meths })
+    @_variable_mapping ||= ::Mailing.mapping.expand_variables(mapping) do |expand_chain|
+      if expand_chain.size == 1
+        expand_chain[0].to_sym
+      else
+        expand_chain.reverse.inject(nil) { |a, n| a.nil? ? n : { n => a } }
       end
-    end
+    end.flatten
   end
 
   def mailer
