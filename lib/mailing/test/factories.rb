@@ -12,7 +12,7 @@ if defined?(::Factory)
     f.after_build do |template|
       Mailing::TestMailer.action_methods << template.action.to_sym
       Mailing::TestMailer.send :alias_method, template.action.to_sym, :simple
-      Mailing.configure { |c| c.register template[:mailer], template.action, :fox, :dog }
+      Mailing.configure { |c| c.register template[:mailer], template.action, fox: 'String', dog: 'String' }
     end
 
   end

@@ -63,13 +63,12 @@ class Mailing::Template < ActiveRecord::Base
   end
 
   def variable_mapping
-    @_variable_mapping ||= ::Mailing.mapping.expand_variables(mapping) do |expand_chain|
-      if expand_chain.size == 1
-        expand_chain[0].to_sym
-      else
-        expand_chain.reverse.inject(nil) { |a, n| a.nil? ? n : { n => a } }
+    @_variable_mapping ||= begin
+      mapping.each_with_object([]) do |(variable, thing), array|
+        meths = Mailing::Utils.liquid_methods_for(thing.constantize)
+        array << (meths.blank? ? variable.to_sym : { variable.to_sym => meths })
       end
-    end.flatten
+    end
   end
 
   def mailer
@@ -99,22 +98,16 @@ class Mailing::Template < ActiveRecord::Base
     options
   end
 
+  def test_message(recipient, liquid_variables = {})
+    message(recipient, *Hashie::Mash.new(liquid_variables).values_at(*variable_names))
+  end
+
   def message(recipient, *variables)
     return nil unless valid?
     self.mailer.testing(self.action, recipient, *variables)
   end
 
-  def test_message(recipient, variables_hash)
-    message(recipient, *hash_to_mashes(variables_hash)).deliver
-  end
-
   private
-
-  def hash_to_mashes(hash)
-    hash.each_with_object([]) do |(_, value), variables|
-      variables << (value.respond_to?(:keys) ? Hashie::Mash.new(value) : value)
-    end
-  end
 
   def prepare_locals(*variables)
     Hash[variable_names.zip(variables)]

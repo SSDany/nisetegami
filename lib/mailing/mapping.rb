@@ -14,7 +14,7 @@ module Mailing
       unless action_exists?(mailer, action)
         raise Exceptions::UnknownActionError.new(mailer, action)
       end
-      @mapping["#{mailer}#{SEPARATOR}#{action}"] = variables_with_types(*locals)
+      @mapping["#{mailer}#{SEPARATOR}#{action}"] = prepare_locals(*locals)
       @mailers << mailer
     end
 
@@ -26,7 +26,7 @@ module Mailing
       @mapping.each do |route, locals|
         mailer, action = route.split(SEPARATOR, 2)
         next unless can_populate?(mailer, action)
-        variables = expand_variables(locals) { |expand_chain| "{{ #{expand_chain.join('.')} }}" }.flatten.join(', ')
+        variables = expand_locals(*locals).map{ |v| "{{ #{v} }}" }.join(" ")
 
         Mailing::Template.create!(
           subject:   "Subject",
@@ -40,34 +40,20 @@ module Mailing
       end
     end
 
-    def expand_variables(variables_hash, expand_chain = [], &block)
-      variables_hash.each_with_object([]) do |(v, thing), array|
-        meths = Utils.liquid_methods_for(thing.constantize)
-        new_expand_chain = expand_chain.dup << v
-        array << (meths.blank? ?
-          yield(new_expand_chain) :
-          expand_variables(variables_with_types(*meths), new_expand_chain, &block))
-      end
-    end
-
     private
 
-    def variables_with_types(*variables)
-      # allow to specify class constants instead of string class names
-      stringified_options = variables.extract_options!.stringify_keys.inject({}) { |hsh, (v, thing)| hsh[v] = thing.to_s; hsh }
-      variables.inject(stringified_options) do |hsh, var|
-        klass = var.to_s.classify
-        # treat variables as strings by default
-        # use exceptions because AR models are not loaded yet
-        hsh[var.to_s] = begin
-          klass.constantize
-          klass
-        rescue NameError
-          'String'
-        end
-
-        hsh
+    def expand_locals(*locals)
+      variables = locals.each_with_object([]) do |(v, thing), array|
+        klass = defined?(thing) == 'constant' ? thing : thing.to_s.constantize
+        meths = Mailing::Utils.liquid_methods_for(klass)
+        array << (meths.blank? ? v : meths.map { |m| "#{v}.#{m}" })
       end
+      variables.flatten!
+    end
+
+    def prepare_locals(*locals)
+      options = locals.extract_options!
+      locals.each_with_object({}) { |v, hsh| hsh[v.to_s] = v.to_s.classify }.merge(options.stringify_keys)
     end
 
     def can_populate?(mailer, action)

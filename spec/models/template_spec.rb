@@ -146,15 +146,4 @@ describe Mailing::Template do
       end
     end
   end
-
-  describe "#hash_to_mashes" do
-    it "converts variables hash to array of OpenMashes" do
-      variables_hash = { student: { email: 'user@test.com', official_name: 'User Name' }, vacation: { duration: '3' } }
-      mashes = [
-        Hashie::Mash.new(email: 'user@test.com', official_name: 'User Name'),
-        Hashie::Mash.new(duration: '3')
-      ]
-      subject.send(:hash_to_mashes, variables_hash).should == mashes
-    end
-  end
 end
