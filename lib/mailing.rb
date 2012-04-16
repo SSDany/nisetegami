@@ -40,6 +40,13 @@ module Mailing
     yield self
   end
 
+  # optional block to cast a thing (String, Symbol)
+  # into a class with liquid_methods
+  def self.cast(&block)
+    @@cast ||= ->(thing){ defined?(thing) == 'constant' ? thing : thing.to_s.constantize }
+    block_given? ? @@cast = block : @@cast
+  end
+
   def self.register(*args)
     @@mapping.register *args
   end

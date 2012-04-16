@@ -44,8 +44,7 @@ module Mailing
 
     def expand_locals(*locals)
       locals.each_with_object([]) do |(v, thing), array|
-        klass = defined?(thing) == 'constant' ? thing : thing.to_s.constantize
-        meths = Mailing::Utils.liquid_methods_for(klass)
+        meths = Mailing::Utils.liquid_methods_for(Mailing.cast[thing])
         array << (meths.blank? ? v : meths.map { |m| "#{v}.#{m}" })
       end.flatten
     end

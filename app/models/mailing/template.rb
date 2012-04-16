@@ -65,7 +65,8 @@ class Mailing::Template < ActiveRecord::Base
   def variable_mapping
     @_variable_mapping ||= begin
       mapping.each_with_object([]) do |(variable, thing), array|
-        meths = Mailing::Utils.liquid_methods_for(thing.constantize)
+        # @todo: store variable_mapping in mapping instead of classes [?]
+        meths = Mailing::Utils.liquid_methods_for(Mailing.cast[thing])
         array << (meths.blank? ? variable.to_sym : { variable.to_sym => meths })
       end
     end
