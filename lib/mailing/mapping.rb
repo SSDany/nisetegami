@@ -51,7 +51,8 @@ module Mailing
 
     def prepare_locals(*locals)
       options = locals.extract_options!
-      locals.each_with_object({}) { |v, hsh| hsh[v.to_s] = v.to_s.classify }.merge(options.stringify_keys)
+      # need to call tableize because of the bug in classify method ('master_class'.classify => 'MasterClas')
+      locals.each_with_object({}) { |v, hsh| hsh[v.to_s] = v.to_s.tableize.classify }.merge(options.stringify_keys)
     end
 
     def can_populate?(mailer, action)
