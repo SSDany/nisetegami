@@ -23,6 +23,8 @@ module Mailing
     end
 
     def populate!
+      Mailing::Template.find_each { |template| template.destroy unless action_exists?(template[:mailer], template.action) }
+
       @mapping.each do |route, locals|
         mailer, action = route.split(SEPARATOR, 2)
         next unless can_populate?(mailer, action)
