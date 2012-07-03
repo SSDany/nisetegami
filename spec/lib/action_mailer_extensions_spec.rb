@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Mailing::ActionMailerExtensions do
   before(:each) do
-    @template = Factory(:simple_mailing_template)
+    @template = FactoryGirl.create(:simple_mailing_template)
   end
 
   context "when format of the template is HTML" do

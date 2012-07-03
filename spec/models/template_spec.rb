@@ -3,12 +3,12 @@ require 'spec_helper'
 describe Mailing::Template do
 
   it "has an actual factory" do
-    Factory(:simple_mailing_template)
+    FactoryGirl.create(:simple_mailing_template)
   end
 
   describe "headers" do
     before(:each) do
-      @template = Factory(:simple_mailing_template)
+      @template = FactoryGirl.create(:simple_mailing_template)
       @recipient = "tester@example.org"
     end
 
@@ -57,7 +57,7 @@ describe Mailing::Template do
 
   describe "content" do
     before(:each) do
-      @template = Factory(:simple_mailing_template)
+      @template = FactoryGirl.create(:simple_mailing_template)
     end
 
     Mailing::Template::CONTENT.each do |attribute|
@@ -81,7 +81,7 @@ describe Mailing::Template do
 
   describe "#message" do
     before(:each) do
-      @template = Factory(:simple_mailing_template)
+      @template = FactoryGirl.create(:simple_mailing_template)
       @recipient = "tester@example.org"
     end
 
