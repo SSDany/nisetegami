@@ -1,15 +1,15 @@
 require 'spec_helper'
 
 describe Mailing::ActionMailerExtensions do
-  before(:each) do
+  before do
     @template = FactoryGirl.create(:simple_mailing_template)
   end
 
   context "when format of the template is HTML" do
-    before { @template.update_attributes(:only_text => false) }
+    before { @template.update_attributes(only_text: false) }
 
     context "when template disabled" do
-      before(:each) do
+      before do
         @template.update_attributes(enabled: false)
         @message = Mailing::TestMailer.send(@template.action, 'fox', 'dog')
       end
@@ -19,7 +19,7 @@ describe Mailing::ActionMailerExtensions do
     end
 
     context "when template enabled" do
-      before(:each) do
+      before do
         @template.update_attributes(enabled: true)
         @message = Mailing::TestMailer.send(@template.action, 'fox', 'dog')
       end
@@ -30,10 +30,10 @@ describe Mailing::ActionMailerExtensions do
   end
 
   context "when format of the template is text" do
-    before { @template.update_attributes(:only_text => true) }
+    before { @template.update_attributes(only_text: true) }
 
     context "when template disabled" do
-      before(:each) do
+      before do
         @template.update_attributes(enabled: false)
         @message = Mailing::TestMailer.send(@template.action, 'fox', 'dog')
       end
@@ -43,7 +43,7 @@ describe Mailing::ActionMailerExtensions do
     end
 
     context "when template enabled" do
-      before(:each) do
+      before do
         @template.update_attributes(enabled: true)
         @message = Mailing::TestMailer.send(@template.action, 'fox', 'dog')
       end

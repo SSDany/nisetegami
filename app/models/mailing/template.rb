@@ -9,8 +9,9 @@ class Mailing::Template < ActiveRecord::Base
 
   ## scopes
 
-  scope :by_mailer, ->(mailer) { where(mailer: mailer.name) }
-  scope :by_layout, ->(layout) { where(layout: layout) }
+  scope :by_mailer, ->(mailer){ where(mailer: mailer.respond_to?(:name) ? mailer.name : mailer) }
+  scope :by_action, ->(action){ where(action: action) }
+  scope :by_layout, ->(layout){ where(layout: layout) }
   scope :enabled,   where(enabled: true)
   scope :disabled,  where(enabled: false)
   scope :html,      where(only_text: false)
@@ -77,41 +78,41 @@ class Mailing::Template < ActiveRecord::Base
   end
 
   CONTENT.each do |attribute|
-    class_eval <<-TEMPLATES
-      def #{attribute}=(raw)
-        self[:#{attribute}] = raw.blank? ? nil : raw
-        @#{attribute}_template = nil
-      end
+    define_method "#{attribute}=" do |raw|
+      self[attribute] = raw.blank? ? nil : raw
+      instance_variable_set("@#{attribute}_template", nil)
+    end
 
-      def render_#{attribute}(*variables)
-        return nil unless self[:#{attribute}]
-        @#{attribute}_template = try_parse_template(:#{attribute}) if @#{attribute}_template.nil? # do not parse invalid templates
-        @#{attribute}_template.render prepare_locals(*variables) if @#{attribute}_template
+    define_method "render_#{attribute}" do |variables|
+      return nil unless self[attribute]
+      # do not parse invalid templates
+      if instance_variable_get("@#{attribute}_template").nil?
+        instance_variable_set("@#{attribute}_template", try_parse_template(attribute))
       end
-    TEMPLATES
+      instance_variable_get("@#{attribute}_template") \
+        .try(:render, variables.stringify_keys.select { |k, v| k.in?(variable_names) })
+    end
   end
 
-  def mailing_options(recipient, *variables)
-    options = {to: recipient, subject: self.render_subject(*variables)}
-    HEADERS.each do |header|
-      options[header] = self[header] unless self[header].blank?
-    end
+  def headers(variables = {})
+    options = { subject: render_subject(variables) }
+    options[:css] = associated_stylesheets unless only_text?
+    HEADERS.each { |header| options[header] = self[header] unless self[header].blank? }
     options
   end
 
-  def test_message(recipient, liquid_variables = {})
-    message(recipient, *Hashie::Mash.new(liquid_variables).values_at(*variable_names))
-  end
-
-  def message(recipient, *variables)
+  def message(recipient, variables)
     return nil unless valid?
-    self.mailer.testing(self.action, recipient, *variables)
+    mailer.testing(action, recipient, variables)
   end
 
   private
 
-  def prepare_locals(*variables)
-    Hash[variable_names.zip(variables)]
+  def associated_stylesheets
+    stylesheets = Array(Mailing.default_css)
+    stylesheets << layout_html unless layout_html.blank?
+    stylesheets.map! { |s| File.join(Mailing.css_path, s) }
+    stylesheets.select { |s| Mailing.asset_provider.exists?(s) }
   end
 
   def check_mailer

@@ -28,7 +28,7 @@ module Mailing
       @mapping.each do |route, locals|
         mailer, action = route.split(SEPARATOR, 2)
         next unless can_populate?(mailer, action)
-        variables = expand_locals(*locals).map{ |v| "{{ #{v} }}" }.join(" ")
+        variables = expand_locals(*locals).map{ |v| "{{ #{v} }}" }.join(", ")
 
         Mailing::Template.create!(
           subject:   "Subject",

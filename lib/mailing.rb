@@ -3,6 +3,8 @@ require 'liquid'
 require 'hashie'
 
 require 'mailing/action_mailer_extensions'
+require 'mailing/liquid_template_handler'
+require 'mailing/ar_template_resolver'
 require 'mailing/asset_provider'
 require 'mailing/exceptions'
 require 'mailing/mapping'

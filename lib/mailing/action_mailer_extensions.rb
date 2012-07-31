@@ -2,30 +2,44 @@ module Mailing
   module ActionMailerExtensions
     extend ActiveSupport::Concern
 
+    included do
+      append_view_path ARTemplateResolver.instance
+      alias_method_chain :collect_responses_and_parts_order, :required_parts_order
+      alias_method_chain :mail, :template
+      alias_method_chain :render, :layout
+    end
+
     module ClassMethods
-      def testing(action, recipient, *variables)
-        message = new.testing do |instance|
+      def testing(action, recipient, variables)
+        new.testing do |instance|
           instance.action_name = action.to_s
-          instance.render_template(recipient, *variables)
+          variables.each { |k, v| instance.instance_variable_set("@#{k}", v) }
+          instance.mail to: recipient
         end
-        message.to = recipient
-        message
       end
     end
 
-    def render_template(recipient, *args)
-      if template && (testing? || template.enabled?)
-        options = args.extract_options!
-        options = options.merge(template.mailing_options(recipient, *args))
-        options[:css] = associated_stylesheets unless template.only_text?
-        mail(options) do |format|
-          format.html { render text: template.render_body_html(*args), layout: template.layout_html_path } unless template.only_text?
-          format.text { render text: template.render_body_text(*args), layout: template.layout_text_path }
-        end
-      elsif template
-        disable_delivery!
-      else
-        raise Exceptions::MissingTemplateError.new(self)
+    def render_with_layout(*args, &block)
+      options = args.first
+      if !options[:layout] && @_template
+        format = options[:template].identifier.split('.').last
+        options[:layout] = @_template.send("layout_#{format}")
+      end
+      render_without_layout(*args, &block)
+    end
+
+    def mail_with_template(headers = {}, &block)
+      # maybe there is better way? - do not want to retrieve template from db second time
+      @_template = Template.by_mailer(self.class).by_action(action_name).first
+      if @_template
+        self.action_name ||= @_template.action.to_s
+        # think about this ugly shit
+        vars = instance_variables.inject({}) { |hsh, var| hsh[var[1..-1].to_sym] = instance_variable_get(var) if var !~ /@_/; hsh }
+        headers.reverse_merge!(@_template.headers(vars))
+      end
+      mail_without_template(headers, &block).tap do |m|
+        m.perform_deliveries = testing? || !@_template || @_template.enabled
+        m.body = nil unless m.perform_deliveries # better to remove corresponding specs??
       end
     end
 
@@ -36,25 +50,15 @@ module Mailing
       @_testing = @_testing_was
     end
 
-    private
-
-    def disable_delivery!
-      message.perform_deliveries = false
-    end
-
-    def associated_stylesheets
-      stylesheets = Array(Mailing.default_css)
-      stylesheets << template.layout_html unless template.layout_html.blank?
-      stylesheets.map! { |s| File.join(Mailing.css_path, s) }
-      stylesheets.select { |s| Mailing.asset_provider.exists?(s) }
-    end
+    protected
 
     def testing?
       !!@_testing
     end
 
-    def template
-      @_template ||= ::Mailing::Template.lookup(self)
+    def collect_responses_and_parts_order_with_required_parts_order(headers)
+      responses, parts_order = collect_responses_and_parts_order_without_required_parts_order(headers)
+      [responses, parts_order || responses.map { |r| r[:content_type] }]
     end
 
   end

@@ -18,9 +18,9 @@ describe Mailing::Template do
           @template.send(header).should be_nil
         end
 
-        it "does not include #{header} to the #mailing_options" do
+        it "does not include #{header} to the #headers" do
           @template.send("#{header}=", nil)
-          @template.mailing_options(@recipient).should_not have_key(header.to_sym)
+          @template.headers.should_not have_key(header.to_sym)
         end
       end
 
@@ -43,14 +43,14 @@ describe Mailing::Template do
          end
        end
 
-      it "does not include #{header} to the #mailing_options if it is blank" do
+      it "does not include #{header} to the #headers if it is blank" do
         @template.send("#{header}=", " ")
-        @template.mailing_options(@recipient).should_not have_key(header.to_sym)
+        @template.headers.should_not have_key(header.to_sym)
       end
 
-      it "includes a valid #{header} to the #mailing_options" do
+      it "includes a valid #{header} to the #headers" do
         @template.send("#{header}=", 'Mikel Lindsaar <mikel@test.lindsaar.net>')
-        @template.mailing_options(@recipient)[header.to_sym].should == 'Mikel Lindsaar <mikel@test.lindsaar.net>'
+        @template.headers[header.to_sym].should == 'Mikel Lindsaar <mikel@test.lindsaar.net>'
       end
     end
   end
@@ -62,7 +62,7 @@ describe Mailing::Template do
 
     Mailing::Template::CONTENT.each do |attribute|
       it "provides a #render_#{attribute} method" do
-        content = @template.send("render_#{attribute}", 'fox', 'dog')
+        content = @template.send("render_#{attribute}", fox: 'fox', dog: 'dog')
         content.should == "The quick brown fox jumps over the lazy dog."
       end
 
@@ -73,7 +73,7 @@ describe Mailing::Template do
 
       it "ignores all variables wich are not in the #variable_names" do
         @template.send("#{attribute}=", "{{ fox }}, {{ dog }}, {{ unknown }}")
-        content = @template.send("render_#{attribute}", 'fox', 'dog', 'unknown')
+        content = @template.send("render_#{attribute}", fox: 'fox', dog: 'dog', unknown: 'unknown')
         content.should == 'fox, dog, '
       end
     end
@@ -86,16 +86,16 @@ describe Mailing::Template do
     end
 
     it "generates an instance of Mail::Message" do
-      @template.message(@recipient, 'fox', 'dog').should be_an_instance_of Mail::Message
+      @template.message(@recipient, fox: 'fox', dog: 'dog').should be_an_instance_of Mail::Message
     end
 
     it "overrides recipient (Mail::Message#to)" do
-      @template.message(@recipient, 'fox', 'dog').to.should == [@recipient]
+      @template.message(@recipient, fox: 'fox', dog: 'dog').to.should == [@recipient]
     end
 
     it "renders subject" do
       @template.update_attributes(subject: '{{ fox }} and {{ dog }}')
-      @template.message(@recipient, 'dog', 'fox').subject.should == 'dog and fox'
+      @template.message(@recipient, dog: 'dog', fox: 'fox').subject.should == 'fox and dog'
     end
 
     context "when format of the template is HTML" do
@@ -104,7 +104,7 @@ describe Mailing::Template do
       context "when template disabled" do
         before(:each) do
           @template.update_attributes(enabled: false)
-          @message = @template.message(@recipient, 'fox', 'dog')
+          @message = @template.message(@recipient, fox: 'fox', dog: 'dog')
         end
 
         specify { @template.should_not be_enabled }
@@ -114,7 +114,7 @@ describe Mailing::Template do
       context "when template enabled" do
         before(:each) do
           @template.update_attributes(enabled: true)
-          @message = @template.message(@recipient, 'fox', 'dog')
+          @message = @template.message(@recipient, fox: 'fox', dog: 'dog')
         end
 
         specify { @template.should be_enabled }
@@ -128,7 +128,7 @@ describe Mailing::Template do
       context "when template disabled" do
         before(:each) do
           @template.update_attributes(enabled: false)
-          @message = @template.message(@recipient, 'fox', 'dog')
+          @message = @template.message(@recipient, fox: 'fox', dog: 'dog')
         end
 
         specify { @template.should_not be_enabled }
@@ -138,7 +138,7 @@ describe Mailing::Template do
       context "when template enabled" do
         before(:each) do
           @template.update_attributes(enabled: true)
-          @message = @template.message(@recipient, 'fox', 'dog')
+          @message = @template.message(@recipient, fox: 'fox', dog: 'dog')
         end
 
         specify { @template.should be_enabled }

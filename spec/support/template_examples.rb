@@ -1,5 +1,5 @@
 shared_examples_for "multipart template" do
-  before(:each) do
+  before do
     Mailing::TestMailer.delivery_method = :test
     Mailing::TestMailer.deliveries.clear
   end
@@ -24,7 +24,7 @@ shared_examples_for "multipart template" do
 end
 
 shared_examples_for "text template" do
-  before(:each) do
+  before do
     Mailing::TestMailer.delivery_method = :test
     Mailing::TestMailer.deliveries.clear
   end
@@ -41,7 +41,7 @@ shared_examples_for "text template" do
 end
 
 shared_examples_for "disabled template" do
-  before(:each) do
+  before do
     Mailing::TestMailer.delivery_method = :test
     Mailing::TestMailer.deliveries.clear
   end
