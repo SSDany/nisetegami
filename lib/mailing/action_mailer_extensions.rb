@@ -4,6 +4,7 @@ module Mailing
 
     included do
       append_view_path ARTemplateResolver.instance
+      append_view_path "#{Rails.root}/app/views/mailing"
       alias_method_chain :collect_responses_and_parts_order, :required_parts_order
       alias_method_chain :mail, :template
       alias_method_chain :render, :layout

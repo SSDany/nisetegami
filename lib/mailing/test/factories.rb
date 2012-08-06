@@ -9,6 +9,8 @@ if defined?(::FactoryGirl)
       subject   "The quick brown {{ fox }} jumps over the lazy {{ dog }}."
       body_text "The quick brown {{ fox }} jumps over the lazy {{ dog }}."
       body_html "The quick brown {{ fox }} jumps over the lazy {{ dog }}."
+      layout_text "default"
+      layout_html "default"
 
       after(:build) do |template|
         Mailing::TestMailer.action_methods << template.action.to_sym

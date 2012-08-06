@@ -10,16 +10,21 @@ shared_examples_for "multipart template" do
   specify { @message.content_type.should =~ /^multipart\/alternative/}
   specify { @message.body.parts.size.should == 2 }
 
+  it "renders a text/plain part" do
+    part = @message.body.parts.last
+    part.content_type.should =~ /^text\/plain/
+    part.to_s.should include('The quick brown fox jumps over the lazy dog')
+  end
+
   it "renders a text/html part" do
     part = @message.body.parts.first
     part.content_type.should =~ /^text\/html/
     part.to_s.should include('The quick brown fox jumps over the lazy dog')
   end
 
-  it "renders a text/plain part" do
-    part = @message.body.parts.last
-    part.content_type.should =~ /^text\/plain/
-    part.to_s.should include('The quick brown fox jumps over the lazy dog')
+  it "renders html layout" do
+    part = @message.body.parts.first
+    part.to_s.should include('default.html.erb')
   end
 end
 
@@ -37,6 +42,10 @@ shared_examples_for "text template" do
 
   it "renders a text/plain body" do
     @message.body.should include('The quick brown fox jumps over the lazy dog')
+  end
+
+  it "renders text layout" do
+    @message.body.should include('default.text.erb')
   end
 end
 
