@@ -22,24 +22,35 @@ module Mailing
 
     def render_with_layout(*args, &block)
       options = args.first
-      if !options[:layout] && @_template
+      if !options[:layout] && @_ar_template
         format = options[:template].identifier.split('.').last
-        options[:layout] = @_template.send("layout_#{format}")
+        options[:layout] = @_ar_template.send("layout_#{format}")
       end
       render_without_layout(*args, &block)
     end
 
     def mail_with_template(headers = {}, &block)
       # maybe there is better way? - do not want to retrieve template from db second time
-      @_template = Template.by_mailer(self.class).by_action(action_name).first
-      if @_template
-        self.action_name ||= @_template.action.to_s
+      @_ar_template = Template.by_mailer(self.class).by_action(action_name).first
+      if @_ar_template
+        self.action_name ||= @_ar_template.action.to_s
         # think about this ugly shit
-        vars = instance_variables.inject({}) { |hsh, var| hsh[var[1..-1].to_sym] = instance_variable_get(var) if var !~ /@_/; hsh }
-        headers.reverse_merge!(@_template.headers(vars))
+        vars = instance_variables.inject({}) do |hsh, var|
+          unless var =~ /@_/
+            template_var = instance_variable_get(var)
+            template_var = begin
+                instance_variable_set(var, "#{template_var.class}Decorator".constantize.decorate(template_var))
+              rescue NameError
+                template_var
+              end
+            hsh[var[1..-1].to_sym] = template_var
+          end
+          hsh
+        end
+        headers.reverse_merge!(@_ar_template.headers(vars))
       end
       mail_without_template(headers, &block).tap do |m|
-        m.perform_deliveries = testing? || !@_template || @_template.enabled
+        m.perform_deliveries = testing? || !@_ar_template || @_ar_template.enabled
         m.body = nil unless m.perform_deliveries # better to remove corresponding specs??
       end
     end
