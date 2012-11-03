@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Mailing::ActionMailerExtensions do
+describe Nisetegami::ActionMailerExtensions do
   before do
-    @template = FactoryGirl.create(:simple_mailing_template)
+    @template = FactoryGirl.create(:simple_nisetegami_template)
   end
 
   context "when format of the template is HTML" do
@@ -11,7 +11,7 @@ describe Mailing::ActionMailerExtensions do
     context "when template disabled" do
       before do
         @template.update_attributes(enabled: false)
-        @message = Mailing::TestMailer.send(@template.action, 'fox', 'dog')
+        @message = Nisetegami::TestMailer.send(@template.action, 'fox', 'dog')
       end
 
       specify { @template.should_not be_enabled }
@@ -21,7 +21,7 @@ describe Mailing::ActionMailerExtensions do
     context "when template enabled" do
       before do
         @template.update_attributes(enabled: true)
-        @message = Mailing::TestMailer.send(@template.action, 'fox', 'dog')
+        @message = Nisetegami::TestMailer.send(@template.action, 'fox', 'dog')
       end
 
       specify { @template.should be_enabled }
@@ -35,7 +35,7 @@ describe Mailing::ActionMailerExtensions do
     context "when template disabled" do
       before do
         @template.update_attributes(enabled: false)
-        @message = Mailing::TestMailer.send(@template.action, 'fox', 'dog')
+        @message = Nisetegami::TestMailer.send(@template.action, 'fox', 'dog')
       end
 
       specify { @template.should_not be_enabled }
@@ -45,7 +45,7 @@ describe Mailing::ActionMailerExtensions do
     context "when template enabled" do
       before do
         @template.update_attributes(enabled: true)
-        @message = Mailing::TestMailer.send(@template.action, 'fox', 'dog')
+        @message = Nisetegami::TestMailer.send(@template.action, 'fox', 'dog')
       end
 
       specify { @template.should be_enabled }

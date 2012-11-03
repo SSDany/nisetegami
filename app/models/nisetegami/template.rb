@@ -1,6 +1,6 @@
-class Mailing::Template < ActiveRecord::Base
+class Nisetegami::Template < ActiveRecord::Base
 
-  self.table_name = :mailing_templates
+  self.table_name = :nisetegami_templates
 
   ## constants
 
@@ -19,7 +19,7 @@ class Mailing::Template < ActiveRecord::Base
 
   ## validations
 
-  validates_format_of :from, :reply_to, :cc, :bcc, with: Mailing.addresses_regexp, allow_blank: true
+  validates_format_of :from, :reply_to, :cc, :bcc, with: Nisetegami.addresses_regexp, allow_blank: true
   validate :subject, :body_text, :layout_text, :name, presence: true
   validate :body_html, :layout_html, presence: true, unless: :only_text?
   validate :check_template_syntax
@@ -38,27 +38,27 @@ class Mailing::Template < ActiveRecord::Base
 
   # Returns a full HTML layout path for +self+.
   # If layout does not specified, fallbacks to the
-  # default layout using Mailing settings.
+  # default layout using Nisetegami settings.
   def layout_html_path
-    layout = self.layout_html || Mailing.default_html_layout
-    layout && File.join(Mailing.layouts_path, layout)
+    layout = self.layout_html || Nisetegami.default_html_layout
+    layout && File.join(Nisetegami.layouts_path, layout)
   end
 
   # Returns a full text layout path for +self+.
   # If layout does not specified, fallbacks to the
-  # default layout using Mailing settings.
+  # default layout using Nisetegami settings.
   def layout_text_path
-    layout = self.layout_text || Mailing.default_text_layout
-    layout && File.join(Mailing.layouts_path, layout)
+    layout = self.layout_text || Nisetegami.default_text_layout
+    layout && File.join(Nisetegami.layouts_path, layout)
   end
 
   # Returns a mapping for +self+, as a Hash.
   def mapping
-    @_mapping ||= ::Mailing.mapping.lookup(mailer, action)
+    @_mapping ||= ::Nisetegami.mapping.lookup(mailer, action)
   end
 
   # Returns a list of variables for +self+,
-  # using a Mailing::Mapping definitions.
+  # using a Nisetegami::Mapping definitions.
   def variable_names
     @_variable_names ||= mapping.keys
   end
@@ -67,7 +67,7 @@ class Mailing::Template < ActiveRecord::Base
     @_variable_mapping ||= begin
       mapping.each_with_object([]) do |(variable, thing), array|
         # @todo: store variable_mapping in mapping instead of classes [?]
-        meths = Mailing::Utils.liquid_methods_for(Mailing.cast[thing])
+        meths = Nisetegami::Utils.liquid_methods_for(Nisetegami.cast[thing])
         array << (meths.blank? ? variable.to_sym : { variable.to_sym => meths })
       end
     end
@@ -109,10 +109,10 @@ class Mailing::Template < ActiveRecord::Base
   private
 
   def associated_stylesheets
-    stylesheets = Array(Mailing.default_css)
+    stylesheets = Array(Nisetegami.default_css)
     stylesheets << layout_html unless layout_html.blank?
-    stylesheets.map! { |s| File.join(Mailing.css_path, s) }
-    stylesheets.select { |s| Mailing.asset_provider.exists?(s) }
+    stylesheets.map! { |s| File.join(Nisetegami.css_path, s) }
+    stylesheets.select { |s| Nisetegami.asset_provider.exists?(s) }
   end
 
   def check_mailer
@@ -137,7 +137,7 @@ end
 
 # == Schema Information
 #
-# Table name: mailing_templates
+# Table name: nisetegami_templates
 #
 #  id          :integer         not null, primary key
 #  mailer      :string(255)
@@ -158,6 +158,6 @@ end
 #
 # Indexes
 #
-#  index_mailing_templates_on_mailer_and_action  (mailer,action) UNIQUE
+#  index_nisetegami_templates_on_mailer_and_action  (mailer,action) UNIQUE
 #
 

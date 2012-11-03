@@ -1,16 +1,16 @@
 require 'roadie'
 require 'liquid'
 
-require 'mailing/action_mailer_extensions'
-require 'mailing/liquid_template_handler'
-require 'mailing/ar_template_resolver'
-require 'mailing/asset_provider'
-require 'mailing/exceptions'
-require 'mailing/mapping'
-require 'mailing/utils'
-require 'mailing/engine'
+require 'nisetegami/action_mailer_extensions'
+require 'nisetegami/liquid_template_handler'
+require 'nisetegami/ar_template_resolver'
+require 'nisetegami/asset_provider'
+require 'nisetegami/exceptions'
+require 'nisetegami/mapping'
+require 'nisetegami/utils'
+require 'nisetegami/engine'
 
-module Mailing
+module Nisetegami
 
   mattr_accessor :layouts_path
   @@layouts_path = nil
@@ -23,7 +23,7 @@ module Mailing
 
   mattr_accessor :default_css
   mattr_accessor :css_path
-  @@css_path = 'mailing' # relative from app/assets/stylesheets
+  @@css_path = 'nisetegami' # relative from app/assets/stylesheets
 
   pattern = '[-a-z0-9_+\.]+@([-a-z0-9]+\.)+[a-z0-9]{2,}'
   address = "(?:[^<@]+\\s+<#{pattern}>|#{pattern})"
@@ -35,7 +35,7 @@ module Mailing
   @@addresses_regexp = /^#{address}(?:\s*,\s*#{address})*$/i
 
   mattr_reader :mapping
-  @@mapping = Mailing::Mapping.new
+  @@mapping = Nisetegami::Mapping.new
 
   def self.configure
     yield self
@@ -57,11 +57,11 @@ module Mailing
   end
 
   def self.text_layouts
-    @@text_layouts ||= Mailing::Utils.filenames(Mailing.layouts_path, :text)
+    @@text_layouts ||= Nisetegami::Utils.filenames(Nisetegami.layouts_path, :text)
   end
 
   def self.html_layouts
-    @@html_layouts ||= Mailing::Utils.filenames(Mailing.layouts_path, :html)
+    @@html_layouts ||= Nisetegami::Utils.filenames(Nisetegami.layouts_path, :html)
   end
 
   def self.reset_layouts!
@@ -70,7 +70,7 @@ module Mailing
   end
 
   def self.asset_provider
-    @@asset_provider ||= Mailing::AssetProvider.new(Roadie.current_provider.prefix)
+    @@asset_provider ||= Nisetegami::AssetProvider.new(Roadie.current_provider.prefix)
   end
 
 end

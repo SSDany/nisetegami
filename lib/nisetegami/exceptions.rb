@@ -1,4 +1,4 @@
-module Mailing
+module Nisetegami
   module Exceptions
 
     class Error < StandardError
@@ -19,7 +19,7 @@ module Mailing
       end
       def message
         "Template for #{@action} not found. " \
-        "You should define it manually or use Mailing.populate!"
+        "You should define it manually or use Nisetegami.populate!"
       end
     end
 

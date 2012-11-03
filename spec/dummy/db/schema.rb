@@ -13,7 +13,7 @@
 
 ActiveRecord::Schema.define(:version => 20120409080913) do
 
-  create_table "mailing_templates", :force => true do |t|
+  create_table "nisetegami_templates", :force => true do |t|
     t.string   "mailer"
     t.string   "action"
     t.string   "name"
@@ -32,6 +32,6 @@ ActiveRecord::Schema.define(:version => 20120409080913) do
     t.datetime "updated_at",                     :null => false
   end
 
-  add_index "mailing_templates", ["mailer", "action"], :name => "index_mailing_templates_on_mailer_and_action", :unique => true
+  add_index "nisetegami_templates", ["mailer", "action"], :name => "index_nisetegami_templates_on_mailer_and_action", :unique => true
 
 end

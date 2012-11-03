@@ -1,4 +1,4 @@
 # desc "Explaining what the task does"
-# task :mailing-templates do
+# task :nisetegami do
 #   # Task goes here
 # end

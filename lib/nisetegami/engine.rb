@@ -1,22 +1,22 @@
-require 'mailing'
+require 'nisetegami'
 
-module Mailing
+module Nisetegami
   class Engine < Rails::Engine
 
-    engine_name :mailing
+    engine_name :nisetegami
 
-    initializer 'mailing.action_mailer' do |app|
+    initializer 'nisetegami.action_mailer' do |app|
       ActiveSupport.on_load :action_mailer do
-        include Mailing::ActionMailerExtensions
+        include Nisetegami::ActionMailerExtensions
       end
     end
 
     config.before_initialize do
-      Mailing.layouts_path = Rails.root.join('app/views/mailing/layouts').to_s
+      Nisetegami.layouts_path = Rails.root.join('app/views/nisetegami/layouts').to_s
     end
 
     config.to_prepare do
-      Mailing.reset_layouts! unless Rails.env.production?
+      Nisetegami.reset_layouts! unless Rails.env.production?
     end
 
   end

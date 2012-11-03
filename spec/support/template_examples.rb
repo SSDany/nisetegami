@@ -1,11 +1,11 @@
 shared_examples_for "multipart template" do
   before do
-    Mailing::TestMailer.delivery_method = :test
-    Mailing::TestMailer.deliveries.clear
+    Nisetegami::TestMailer.delivery_method = :test
+    Nisetegami::TestMailer.deliveries.clear
   end
 
   specify { @message.perform_deliveries.should == true }
-  specify { @message.deliver; Mailing::TestMailer.deliveries.size.should == 1 }
+  specify { @message.deliver; Nisetegami::TestMailer.deliveries.size.should == 1 }
 
   specify { @message.content_type.should =~ /^multipart\/alternative/}
   specify { @message.body.parts.size.should == 2 }
@@ -26,16 +26,20 @@ shared_examples_for "multipart template" do
     part = @message.body.parts.first
     part.to_s.should include('default.html.erb')
   end
+
+  it "renders subject" do
+    @message.subject.should include('The quick brown fox jumps over the lazy dog')
+  end
 end
 
 shared_examples_for "text template" do
   before do
-    Mailing::TestMailer.delivery_method = :test
-    Mailing::TestMailer.deliveries.clear
+    Nisetegami::TestMailer.delivery_method = :test
+    Nisetegami::TestMailer.deliveries.clear
   end
 
   specify { @message.perform_deliveries.should == true }
-  specify { @message.deliver; Mailing::TestMailer.deliveries.size.should == 1 }
+  specify { @message.deliver; Nisetegami::TestMailer.deliveries.size.should == 1 }
 
   specify { @message.body.parts.should be_blank }
   specify { @message.content_type.should =~ /^text\/plain/ }
@@ -47,16 +51,20 @@ shared_examples_for "text template" do
   it "renders text layout" do
     @message.body.should include('default.text.erb')
   end
+
+  it "renders subject" do
+    @message.subject.should include('The quick brown fox jumps over the lazy dog')
+  end
 end
 
 shared_examples_for "disabled template" do
   before do
-    Mailing::TestMailer.delivery_method = :test
-    Mailing::TestMailer.deliveries.clear
+    Nisetegami::TestMailer.delivery_method = :test
+    Nisetegami::TestMailer.deliveries.clear
   end
 
   specify { @message.perform_deliveries.should == false }
-  specify { @message.deliver; Mailing::TestMailer.deliveries.size.should == 0 }
+  specify { @message.deliver; Nisetegami::TestMailer.deliveries.size.should == 0 }
 
   specify { @message.body.parts.should be_blank }
   specify { @message.body.should be_blank }

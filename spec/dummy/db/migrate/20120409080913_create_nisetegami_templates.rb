@@ -1,6 +1,6 @@
-class CreateMailingTemplates < ActiveRecord::Migration
+class CreateNisetegamiTemplates < ActiveRecord::Migration
   def self.up
-    create_table :mailing_templates do |t|
+    create_table :nisetegami_templates do |t|
 
       ## mapping
       t.string :mailer # EG: "TestMailer"
@@ -26,10 +26,10 @@ class CreateMailingTemplates < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :mailing_templates, [:mailer, :action], unique: true
+    add_index :nisetegami_templates, [:mailer, :action], unique: true
   end
 
   def self.down
-    drop_table :mailing_templates
+    drop_table :nisetegami_templates
   end
 end

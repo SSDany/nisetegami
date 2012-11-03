@@ -1,4 +1,4 @@
-module Mailing
+module Nisetegami
   class AssetProvider < Roadie::AssetPipelineProvider
 
     def exists?(name)

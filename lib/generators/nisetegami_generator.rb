@@ -1,7 +1,7 @@
 require 'rails/generators'
 require 'rails/generators/migration'
 
-class MailingTemplatesGenerator < Rails::Generators::Base
+class NisetegamiGenerator < Rails::Generators::Base
   include Rails::Generators::Migration
 
   def self.source_root
@@ -17,7 +17,7 @@ class MailingTemplatesGenerator < Rails::Generators::Base
   end
 
   def create_config_file
-    template 'initializers/mailing.rb', 'config/initializers/mailing.rb'
+    template 'initializers/nisetegami.rb', 'config/initializers/nisetegami.rb'
   end
 
   def create_migrations

@@ -1,3 +1,3 @@
-module MailingTemplates
+module Nisetegami
   VERSION = "0.3.0"
 end

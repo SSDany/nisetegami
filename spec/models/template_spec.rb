@@ -1,18 +1,18 @@
 require 'spec_helper'
 
-describe Mailing::Template do
+describe Nisetegami::Template do
 
   it "has an actual factory" do
-    FactoryGirl.create(:simple_mailing_template)
+    FactoryGirl.create(:simple_nisetegami_template)
   end
 
   describe "headers" do
     before(:each) do
-      @template = FactoryGirl.create(:simple_mailing_template)
+      @template = FactoryGirl.create(:simple_nisetegami_template)
       @recipient = "tester@example.org"
     end
 
-    Mailing::Template::HEADERS.each do |header|
+    Nisetegami::Template::HEADERS.each do |header|
       context "defaults" do
         it "defaults #{header} do nil" do
           @template.send(header).should be_nil
@@ -57,10 +57,10 @@ describe Mailing::Template do
 
   describe "content" do
     before(:each) do
-      @template = FactoryGirl.create(:simple_mailing_template)
+      @template = FactoryGirl.create(:simple_nisetegami_template)
     end
 
-    Mailing::Template::CONTENT.each do |attribute|
+    Nisetegami::Template::CONTENT.each do |attribute|
       it "provides a #render_#{attribute} method" do
         content = @template.send("render_#{attribute}", fox: 'fox', dog: 'dog')
         content.should == "The quick brown fox jumps over the lazy dog."
@@ -81,7 +81,7 @@ describe Mailing::Template do
 
   describe "#message" do
     before(:each) do
-      @template = FactoryGirl.create(:simple_mailing_template)
+      @template = FactoryGirl.create(:simple_nisetegami_template)
       @recipient = "tester@example.org"
     end
 

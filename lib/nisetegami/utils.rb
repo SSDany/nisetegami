@@ -1,4 +1,4 @@
-module Mailing
+module Nisetegami
   module Utils
     module_function
 

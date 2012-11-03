@@ -1,10 +1,10 @@
-module Mailing
+module Nisetegami
   module ActionMailerExtensions
     extend ActiveSupport::Concern
 
     included do
       append_view_path ARTemplateResolver.instance
-      append_view_path "#{Rails.root}/app/views/mailing"
+      append_view_path "#{Rails.root}/app/views/nisetegami"
       alias_method_chain :collect_responses_and_parts_order, :required_parts_order
       alias_method_chain :mail, :template
       alias_method_chain :render, :layout
@@ -30,7 +30,7 @@ module Mailing
     end
 
     def mail_with_template(headers = {}, &block)
-      # maybe there is better way? - do not want to retrieve template from db second time
+      # maybe there is better way? - do not want to do query it (despite cache is used) for second time
       @_ar_template = Template.by_mailer(self.class).by_action(action_name).first
       if @_ar_template
         self.action_name ||= @_ar_template.action.to_s

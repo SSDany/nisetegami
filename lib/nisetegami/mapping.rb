@@ -1,4 +1,4 @@
-module Mailing
+module Nisetegami
   class Mapping
     attr_reader :mailers
 
@@ -23,14 +23,14 @@ module Mailing
     end
 
     def populate!
-      Mailing::Template.find_each { |template| template.destroy unless action_exists?(template[:mailer], template.action) }
+      Nisetegami::Template.find_each { |template| template.destroy unless action_exists?(template[:mailer], template.action) }
 
       @mapping.each do |route, locals|
         mailer, action = route.split(SEPARATOR, 2)
         next unless can_populate?(mailer, action)
         variables = expand_locals(*locals).map{ |v| "{{ #{v} }}" }.join(", ")
 
-        Mailing::Template.create!(
+        Nisetegami::Template.create!(
           subject:   "Subject",
           body_text: "You can use following variables: #{variables}. Format: text.",
           body_html: "You can use following variables: #{variables}. Format: html.",
@@ -46,7 +46,7 @@ module Mailing
 
     def expand_locals(*locals)
       locals.each_with_object([]) do |(v, thing), array|
-        meths = Mailing::Utils.liquid_methods_for(Mailing.cast[thing])
+        meths = Nisetegami::Utils.liquid_methods_for(Nisetegami.cast[thing])
         array << (meths.blank? ? v : meths.map { |m| "#{v}.#{m}" })
       end.flatten
     end
@@ -58,7 +58,7 @@ module Mailing
     end
 
     def can_populate?(mailer, action)
-      action_exists?(mailer, action) && !Mailing::Template.where(mailer: mailer, action: action).exists?
+      action_exists?(mailer, action) && !Nisetegami::Template.where(mailer: mailer, action: action).exists?
     end
 
     def action_exists?(mailer, action)
