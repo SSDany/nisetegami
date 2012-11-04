@@ -12,11 +12,7 @@ module Nisetegami
     end
 
     config.before_initialize do
-      Nisetegami.layouts_path = Rails.root.join('app/views/nisetegami/layouts').to_s
-    end
-
-    config.to_prepare do
-      Nisetegami.reset_layouts! unless Rails.env.production?
+      Nisetegami.class_variable_set(:@@layouts_path, Rails.root.join('app/views/nisetegami/layouts').to_s)
     end
 
   end

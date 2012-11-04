@@ -18,8 +18,10 @@ class Nisetegami::Template < ActiveRecord::Base
   scope :text,      where(only_text: true)
 
   ## validations
-
-  validates_format_of :from, :reply_to, :cc, :bcc, with: Nisetegami.addresses_regexp, allow_blank: true
+  email_re     = '[-a-z0-9_+\.]+@([-a-z0-9]+\.)+[a-z0-9]{2,}'
+  address_re   = "(?:[^<@]+\\s+<#{email_re}>|#{email_re})"
+  addresses_re = /^#{address_re}(?:\s*,\s*#{address_re})*$/i
+  validates_format_of :from, :reply_to, :cc, :bcc, with: addresses_re, allow_blank: true
   validate :subject, :body_text, :layout_text, :name, presence: true
   validate :body_html, :layout_html, presence: true, unless: :only_text?
   validate :check_template_syntax
@@ -40,7 +42,7 @@ class Nisetegami::Template < ActiveRecord::Base
   # If layout does not specified, fallbacks to the
   # default layout using Nisetegami settings.
   def layout_html_path
-    layout = self.layout_html || Nisetegami.default_html_layout
+    layout = self.layout_html || 'default'
     layout && File.join(Nisetegami.layouts_path, layout)
   end
 
@@ -48,7 +50,7 @@ class Nisetegami::Template < ActiveRecord::Base
   # If layout does not specified, fallbacks to the
   # default layout using Nisetegami settings.
   def layout_text_path
-    layout = self.layout_text || Nisetegami.default_text_layout
+    layout = self.layout_text || 'default'
     layout && File.join(Nisetegami.layouts_path, layout)
   end
 
@@ -109,10 +111,11 @@ class Nisetegami::Template < ActiveRecord::Base
   private
 
   def associated_stylesheets
-    stylesheets = Array(Nisetegami.default_css)
+    @@asset_provider ||= Nisetegami::AssetProvider.new(Roadie.current_provider.prefix)
+    stylesheets = [:default]
     stylesheets << layout_html unless layout_html.blank?
-    stylesheets.map! { |s| File.join(Nisetegami.css_path, s) }
-    stylesheets.select { |s| Nisetegami.asset_provider.exists?(s) }
+    stylesheets.map! { |s| File.join('nisetegami', s.to_s) }
+    stylesheets.select { |s| @@asset_provider.exists?(s) }
   end
 
   def check_mailer

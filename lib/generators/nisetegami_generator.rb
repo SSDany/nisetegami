@@ -16,10 +16,6 @@ class NisetegamiGenerator < Rails::Generators::Base
     end
   end
 
-  def create_config_file
-    template 'initializers/nisetegami.rb', 'config/initializers/nisetegami.rb'
-  end
-
   def create_migrations
     Dir[File.join(self.class.source_root, 'migrations/*.rb')].sort.each do |template|
       basename = File.basename(template).gsub(/^\d+_/, '')

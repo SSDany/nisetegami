@@ -8,9 +8,7 @@ module Nisetegami
     end
 
     def filenames(path, format)
-      Dir[File.join(path, "*.#{format}.*")].map { |file|
-        File.basename(file).sub(/\.#{format}#{File.extname(file)}$/, "")
-      }.uniq
+      Dir[File.join(path, "*.#{format}.*")].map { |file| File.basename(file).sub(/\.#{format}#{File.extname(file)}$/, "") }.uniq
     end
 
   end
