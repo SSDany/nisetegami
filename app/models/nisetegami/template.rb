@@ -38,20 +38,12 @@ class Nisetegami::Template < ActiveRecord::Base
 
   public
 
-  # Returns a full HTML layout path for +self+.
-  # If layout does not specified, fallbacks to the
-  # default layout using Nisetegami settings.
   def layout_html_path
-    layout = self.layout_html || 'default'
-    layout && File.join(Nisetegami.layouts_path, layout)
+    layout_html && File.join(Nisetegami.layouts_path, layout_html)
   end
 
-  # Returns a full text layout path for +self+.
-  # If layout does not specified, fallbacks to the
-  # default layout using Nisetegami settings.
   def layout_text_path
-    layout = self.layout_text || 'default'
-    layout && File.join(Nisetegami.layouts_path, layout)
+    layout_text && File.join(Nisetegami.layouts_path, layout_text)
   end
 
   # Returns a mapping for +self+, as a Hash.
@@ -77,6 +69,7 @@ class Nisetegami::Template < ActiveRecord::Base
 
   def mailer
     @_mailer ||= self[:mailer].constantize
+  rescue NameError
   end
 
   CONTENT.each do |attribute|
@@ -119,10 +112,8 @@ class Nisetegami::Template < ActiveRecord::Base
   end
 
   def check_mailer
-    errors.add(:mailer, :undefined) unless mailer.ancestors.include?(ActionMailer::Base)
-    errors.add(:action, :undefined) unless mailer.action_methods.include?(action.to_s)
-  rescue NameError
-    errors.add(:mailer, :undefined)
+    errors.add(:mailer, :undefined) if !mailer || !mailer.ancestors.include?(ActionMailer::Base)
+    errors.add(:action, :undefined) if mailer && !mailer.action_methods.include?(action.to_s)
   end
 
   def check_template_syntax

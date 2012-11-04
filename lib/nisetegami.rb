@@ -39,8 +39,9 @@ module Nisetegami
   class << self
     %w(text html).each do |format|
       define_method("#{format}_layouts") do
-        class_variable_get(:"@@#{format}_layouts") || Nisetegami::Utils.filenames(Nisetegami.layouts_path, format).tap do |layouts|
-          class_variable_set(:"@@#{format}_layouts", layouts) if Rails.env.production?
+        # cache result in class variable unless in development
+        instance_variable_get(:"@#{format}_layouts") || Nisetegami::Utils.filenames(Nisetegami.layouts_path, format).tap do |layouts|
+          instance_variable_set(:"@#{format}_layouts", layouts) unless Rails.env.development?
         end
       end
     end
