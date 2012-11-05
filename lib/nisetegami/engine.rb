@@ -2,8 +2,7 @@ require 'nisetegami'
 
 module Nisetegami
   class Engine < Rails::Engine
-
-    engine_name :nisetegami
+    isolate_namespace Nisetegami
 
     initializer 'nisetegami.action_mailer' do |app|
       ActiveSupport.on_load :action_mailer do
