@@ -1,0 +1,6 @@
+<div class="control-group">
+  <%= f.label attr, class: 'control-label' %>
+  <div class="controls">
+    <%= yield.present? ? yield : f.text_field(attr, class: 'text_field') %>
+  </div>
+</div>

@@ -8,6 +8,7 @@ require 'nisetegami/asset_provider'
 require 'nisetegami/exceptions'
 require 'nisetegami/mapping'
 require 'nisetegami/utils'
+require 'nisetegami/template_presenter'
 require 'nisetegami/engine'
 
 module Nisetegami

@@ -1,5 +1,3 @@
-require 'nisetegami'
-
 module Nisetegami
   class Engine < Rails::Engine
     isolate_namespace Nisetegami

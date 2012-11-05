@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= t('nisetegami.admin.title') %></title>
+  <%= stylesheet_link_tag    "nisetegami/application", :media => "all" %>
+  <%= javascript_include_tag "nisetegami/application" %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+
+<%= yield %>
+
+</body>
+</html>

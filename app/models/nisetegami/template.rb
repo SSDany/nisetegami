@@ -1,5 +1,7 @@
 class Nisetegami::Template < ActiveRecord::Base
 
+  attr_accessible :name, :subject, :from, :reply_to, :cc, :bcc, :enabled, :only_text, :layout_text, :body_text, :layout_html, :body_html
+
   ## constants
 
   CONTENT = [:subject, :body_html, :body_text]

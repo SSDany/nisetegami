@@ -1,0 +1,19 @@
+<h1><%= t('.title') %></h1>
+
+<table>
+  <thead>
+    <tr>
+      <%- %w(name mailer action subject from reply_to enabled only_text).each do |attr| %>
+        <th><%= Nisetegami::Template.human_attribute_name(attr) %></th>
+      <% end %>
+  </thead>
+  <tbody>
+    <%- @templates.map { |t| Nisetegami::Admin::TemplatePresenter.new(t) }.each do |t| %>
+      <tr>
+        <%- %w(name mailer action subject from reply_to enabled only_text).each do |attr| %>
+          <td><%= t.send(attr) %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
