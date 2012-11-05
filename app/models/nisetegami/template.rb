@@ -1,7 +1,5 @@
 class Nisetegami::Template < ActiveRecord::Base
 
-  self.table_name = :nisetegami_templates
-
   ## constants
 
   CONTENT = [:subject, :body_html, :body_text]
