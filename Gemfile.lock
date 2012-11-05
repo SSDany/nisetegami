@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    nisetegami (0.3.0)
+    nisetegami (0.4.0)
       liquid
       rails (~> 3.2)
       roadie (>= 2.3.1)
@@ -147,6 +147,5 @@ DEPENDENCIES
   nisetegami!
   pry-debugger
   rails (~> 3.2)
-  rspec
   rspec-rails
   sqlite3
