@@ -1,27 +1,36 @@
-<%= form_for @template do |f| %>
-  <fieldset>
-    <legend><%= t('.title') %></legend>
+<h1><%= t('.title', title: @template.name) %></h1>
 
-    <% %w(name subject from reply_to cc bcc).each do |attr| %>
-      <%= render 'field', f: f, attr: attr %>
+<div class="row-fluid">
+  <div class="span9">
+    <%= form_for @template, html: {class: 'well'} do |f| %>
+      <fieldset>
+        <%= render 'edit_form_buttons', f: f, bottom_margin: true %>
+
+        <% %w(name subject from reply_to cc bcc).each do |attr| %>
+          <%= render 'field', f: f, attr: attr %>
+        <% end %>
+
+        <% %w(enabled only_text).each do |attr| %>
+          <%= render layout: 'field', locals: {f: f, attr: attr} do %>
+            <%= f.check_box attr %>
+          <% end %>
+        <% end %>
+
+        <% %w(text html).each do |format| %>
+          <%= render layout: 'field', locals: {f: f, attr: "layout_#{format}"} do %>
+            <%= f.select "layout_#{format}", options_for_select([''] + Nisetegami.send("#{format}_layouts")) %>
+          <% end %>
+          <%= render layout: 'field', locals: {f: f, attr: "body_#{format}"} do %>
+            <%= f.text_area "body_#{format}", class: 'span12', rows: 10 %>
+          <% end %>
+        <% end %>
+
+        <%= render 'edit_form_buttons', f: f %>
+      </fieldset>
     <% end %>
+  </div>
 
-    <% %w(enabled only_text).each do |attr| %>
-      <%= render layout: 'field', locals: {f: f, attr: attr} do %>
-        <%= f.check_box attr, class: 'check_field' %>
-      <% end %>
-    <% end %>
-
-    <% %w(text html).each do |format| %>
-      <%= render layout: 'field', locals: {f: f, attr: "layout_#{format}"} do %>
-        <%= f.select "layout_#{format}", options_for_select(Nisetegami.send("#{format}_layouts").unshift(['-', '']), class: 'select_field') %>
-      <% end %>
-      <%= render 'field', f: f, attr: "body_#{format}" %>
-    <% end %>
-
-    <div class="form-actions">
-      <%= f.submit nil, class: 'btn btn-primary' %>
-      <%= link_to t('.cancel'), templates_path, class: 'btn' %>
-    </div>
-  </fieldset>
-<% end %>
+  <div class="span3">
+    <%= render 'test_mail', template: Nisetegami::TemplatePresenter.new(@template) %>
+  </div>
+</div>

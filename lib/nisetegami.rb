@@ -10,6 +10,7 @@ require 'nisetegami/mapping'
 require 'nisetegami/utils'
 require 'nisetegami/template_presenter'
 require 'nisetegami/engine'
+require 'nisetegami/railtie'
 
 module Nisetegami
 
@@ -17,6 +18,9 @@ module Nisetegami
 
   mattr_reader :mapping
   @@mapping = Nisetegami::Mapping.new
+
+  mattr_accessor :email_re
+  @@email_re = /[-a-z0-9_+\.]+@([-a-z0-9]+\.)+[a-z0-9]{2,}/
 
   def self.configure
     yield self

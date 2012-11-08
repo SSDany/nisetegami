@@ -38,11 +38,9 @@ module Nisetegami
         vars = instance_variables.inject({}) do |hsh, var|
           unless var =~ /@_/
             template_var = instance_variable_get(var)
-            template_var = begin
-                instance_variable_set(var, "#{template_var.class}Decorator".constantize.decorate(template_var))
-              rescue NameError
-                template_var
-              end
+            if template_var.class != (casted = Nisetegami.cast[template_var.class])
+              template_var = instance_variable_set(var, casted.new(template_var))
+            end
             hsh[var[1..-1].to_sym] = template_var
           end
           hsh

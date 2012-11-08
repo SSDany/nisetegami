@@ -1,0 +1,31 @@
+<%= form_tag '', method: :get, class: 'filters well' do %>
+<table>
+<tr>
+  <th colspan="2"><h3><%= t('.title') %></h3></th>
+</tr>
+<tr>
+  <th><%= t('.state') %></th>
+  <td><%= select_tag :enabled, options_for_select([[''], [t('.enabled'), true], [t('.disabled'), false]], params[:enabled]) %></td>
+</tr>
+<tr>
+  <th><%= Nisetegami::Template.human_attribute_name :mailer %></th>
+  <td><%= select_tag :mailer, options_for_select(([''] + Nisetegami.mapping.mailers.to_a), params[:mailer]) %></td>
+</tr>
+<tr>
+  <th><%= Nisetegami::Template.human_attribute_name :action %></th>
+  <td><%= select_tag :mailer_action, options_for_select(params[:mailer].blank? ? '' : ([''] + Nisetegami.mapping.actions(params[:mailer]).to_a), params[:mailer_action]) %></td>
+</tr>
+<% %w(subject from reply_to cc bcc).each do |attr| %>
+  <tr>
+    <th><%= Nisetegami::Template.human_attribute_name attr %></th>
+    <td><%= text_field_tag attr, params[attr] %></td>
+  </tr>
+<% end %>
+<tr>
+  <th colspan="2" align="left">
+    <%= submit_tag t('.filter'), class: 'btn btn-primary' %>
+    <%= content_tag :button, t('.reset'), class: 'reset btn btn-inverse' %>
+  </th>
+</tr>
+</table>
+<% end %>

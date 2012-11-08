@@ -1,6 +1,8 @@
 class Nisetegami::Template < ActiveRecord::Base
 
-  attr_accessible :name, :subject, :from, :reply_to, :cc, :bcc, :enabled, :only_text, :layout_text, :body_text, :layout_html, :body_html
+  attr_accessible :name, :mailer, :action, :subject, :from,
+                  :reply_to, :cc, :bcc, :enabled, :only_text,
+                  :layout_text, :body_text, :layout_html, :body_html
 
   ## constants
 
@@ -9,6 +11,7 @@ class Nisetegami::Template < ActiveRecord::Base
 
   ## scopes
 
+  scope :recent,    order('id DESC')
   scope :by_mailer, ->(mailer){ where(mailer: mailer.respond_to?(:name) ? mailer.name : mailer) }
   scope :by_action, ->(action){ where(action: action) }
   scope :by_layout, ->(layout){ where(layout: layout) }
@@ -18,14 +21,18 @@ class Nisetegami::Template < ActiveRecord::Base
   scope :text,      where(only_text: true)
 
   ## validations
-  email_re     = '[-a-z0-9_+\.]+@([-a-z0-9]+\.)+[a-z0-9]{2,}'
-  address_re   = "(?:[^<@]+\\s+<#{email_re}>|#{email_re})"
+
+  address_re   = "(?:[^<@]+\\s+<#{Nisetegami.email_re}>|#{Nisetegami.email_re})"
   addresses_re = /^#{address_re}(?:\s*,\s*#{address_re})*$/i
   validates_format_of :from, :reply_to, :cc, :bcc, with: addresses_re, allow_blank: true
-  validate :subject, :body_text, :layout_text, :name, presence: true
+  validate :name, :subject, :body_text, :layout_text, presence: true
   validate :body_html, :layout_html, presence: true, unless: :only_text?
   validate :check_template_syntax
   validate :check_mailer
+
+  ## callbacks
+
+  before_validation :set_name_if_necessary
 
   ## class-methods
 
@@ -35,8 +42,6 @@ class Nisetegami::Template < ActiveRecord::Base
   def self.lookup(mailer_instance)
     relation.where(mailer: mailer_instance.class.name, action: mailer_instance.action_name).first
   end
-
-  public
 
   def layout_html_path
     layout_html && File.join(Nisetegami.layouts_path, layout_html)
@@ -125,6 +130,10 @@ class Nisetegami::Template < ActiveRecord::Base
   rescue Liquid::SyntaxError => error
     errors.add(attribute, :liquid_syntax_error, message: error.message)
     false
+  end
+
+  def set_name_if_necessary
+    self.name = "#{mailer}##{action}" unless name.present?
   end
 
 end

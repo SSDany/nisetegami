@@ -1,0 +1,26 @@
+<%= form_tag test_template_path(template), class: 'well' do %>
+  <h3><%= t('.title') %></h3>
+
+  <%= label_tag :recipient, t('.recipient') %>
+  <%= text_field_tag :recipient %>
+
+  <%- if template.variable_mapping.present? %>
+    <h5><%= t('.variables') %></h5>
+  <% end %>
+
+  <% template.variable_mapping.each do |var| %>
+    <% unless var.respond_to?(:keys) %>
+      <%= render 'var', var: "[#{var}]", label: var, i18n_label: "#{template.translate_variable(var)}" %>
+    <% else %>
+      <% var.each do |klass, attributes| %>
+        <% attributes.each do |attr| %>
+          <%= render 'var', var: "[#{klass}][#{attr}]", label: "#{klass}.#{attr}", i18n_label: "#{template.translate_variable(klass, attr)}" %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+  <div class="buttons">
+    <%= submit_tag t('.send'), class: 'btn btn-primary' %>
+    <%= content_tag :button, t('.reset'), class: 'reset btn btn-inverse' %>
+  </div>
+<% end %>

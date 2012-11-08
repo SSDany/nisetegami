@@ -1,0 +1,3 @@
+<% margin_class = defined?(bottom_margin) && bottom_margin ? 'bottom20' : '' %>
+<%= f.submit t('.update'), class: "btn btn-primary #{margin_class}" %>
+<%= link_to t('.cancel'), templates_path, class: "btn #{margin_class}" %>

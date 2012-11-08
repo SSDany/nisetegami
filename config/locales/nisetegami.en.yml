@@ -1,4 +1,56 @@
 en:
+  activerecord:
+    models:
+      nisetegami/template: "Mail Template"
+    attributes:
+      nisetegami/template:
+        name: "Name"
+        mailer: "Mailer"
+        action: "Action"
+        subject: "Subject"
+        from: "From"
+        reply_to: "Reply to"
+        cc: "CC"
+        bcc: "BCC"
+        body_text: "Body text"
+        body_html: "Body html"
+        layout_text: "Layout text"
+        layout_html: "Layout html"
   nisetegami:
+    flash:
+      alert: "Alert"
+      notice: "Success"
+    are_you_sure: "Are you sure?"
     admin:
-      title: 'Nisetegami Admin'
+      title: "Nisetegami Admin"
+    templates:
+      wrong_email: "Wrong email address"
+      test_email_delivered: "Test email delivered"
+      destroyed: "Templates %{templates} have been destroyed"
+      updated: "Template %{template} has been updated"
+      index:
+        are_you_sure: "Are you sure?"
+        title: "Mail Templates"
+        delete: "Delete"
+        edit: "Edit"
+        no_templates_found: "There are no templates found"
+      delete_button:
+        label: "Delete checked"
+      edit:
+        title: "Mail Template %{title}"
+      edit_form_buttons:
+        cancel: "Cancel"
+        update: "Update"
+      filters:
+        title: "Filters"
+        enabled: "enabled"
+        disabled: "disabled"
+        filter: "Filter"
+        state: "State"
+        reset: "Reset"
+      test_mail:
+        title: "Test Mail"
+        variables: "Variables"
+        recipient: "Recipient"
+        send: "Send"
+        reset: "Reset"

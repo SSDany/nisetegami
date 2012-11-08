@@ -32,14 +32,18 @@ module Nisetegami
 
         Nisetegami::Template.create!(
           subject:   "Subject",
-          body_text: "You can use following variables: #{variables}. Format: text.",
-          body_html: "You can use following variables: #{variables}. Format: html.",
-          name:    route,
+          body_text: "You can use the following variables: #{variables}. Format: text.",
+          body_html: "You can use the following variables: #{variables}. Format: html.",
           mailer:  mailer,
           action:  action,
           enabled: false
         )
       end
+    end
+
+    def actions(mailer)
+      klass = mailer.constantize
+      klass.ancestors.include?(ActionMailer::Base) && klass.action_methods
     end
 
     private
@@ -62,11 +66,7 @@ module Nisetegami
     end
 
     def action_exists?(mailer, action)
-      klass = mailer.constantize
-      klass.ancestors.include?(ActionMailer::Base) &&
-      klass.action_methods.include?(action.to_s)
-    rescue NameError
-      false
+      actions(mailer).include?(action.to_s)
     end
 
   end

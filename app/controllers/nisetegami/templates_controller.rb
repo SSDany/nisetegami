@@ -3,11 +3,19 @@ require_dependency "nisetegami/application_controller"
 module Nisetegami
   class TemplatesController < ApplicationController
     def index
-      @templates = Template.all
+      @templates = Template.recent
+      params[:enabled] = params[:enabled] == 'true' ? true : false unless params[:enabled].blank?
+      %w(enabled mailer mailer_action).each do |attr|
+        @templates = @templates.where(attr => params[attr]) unless params[attr].blank?
+      end
+      %w(subject from reply_to cc bcc).each do |attr|
+        @templates = @templates.where(["#{attr} LIKE ?", "%#{params[attr]}%"]) unless params[attr].blank?
+      end
+      @templates = @templates.all
     end
 
-    def show
-      @template = Template.find(params[:id])
+    def actions
+      render json: [''] + Nisetegami.mapping.actions(params[:mailer])
     end
 
     def edit
@@ -17,29 +25,28 @@ module Nisetegami
     def update
       @template = Template.find(params[:id])
       if @template.update_attributes(params[:template])
-        redirect_to({action: :index}, notice: t('nisetegami.template.updated'))
+        redirect_to templates_path, notice: t('nisetegami.templates.updated', template: @template.name)
       else
         render action: :edit
       end
     end
 
     def destroy
-      Template.find(params[:id]).destroy
-    end
-
-    def populate
-      Nisetegami.populate!
+      templates = Template.where(id: params[:template_ids])
+      template_names = templates.map(&:name).join(', ')
+      templates.destroy_all
+      redirect_to templates_path, notice: t('nisetegami.templates.destroyed', templates: template_names)
     end
 
     def test
       template = Template.find(params[:id])
-      message = unless params[:recipient] =~ Nisetegami.email_regexp
-          {alert: t('nisetegami.wrong_email')}
+      message = unless params[:recipient] =~ Nisetegami.email_re
+          {alert: t('nisetegami.templates.wrong_email')}
         else
           template.message(params[:recipient], params[:template]).deliver
-          {notice: t('nisetegami.test_delivered')}
+          {notice: t('nisetegami.templates.test_email_delivered')}
         end
-      redirect_to :back, message
+      redirect_to edit_template_path(template), message
     end
   end
 end
