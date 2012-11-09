@@ -5,7 +5,7 @@ class CreateNisetegamiTemplates < ActiveRecord::Migration
       ## mapping
       t.string :mailer # EG: "TestMailer"
       t.string :action # EG: "simple"
-      t.string :name   # results in "TestMailer#simple"
+      t.string :name
 
       ## headers
       t.string :from
