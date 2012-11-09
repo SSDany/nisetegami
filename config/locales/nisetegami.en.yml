@@ -35,7 +35,7 @@ en:
         edit: "Edit"
         no_templates_found: "There are no templates found"
       delete_button:
-        label: "Delete checked"
+        label: "Delete selected"
       edit:
         title: "Mail Template %{title}"
       edit_form_buttons:
