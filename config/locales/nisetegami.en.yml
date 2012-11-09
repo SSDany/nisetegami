@@ -16,10 +16,11 @@ en:
         body_html: "Body html"
         layout_text: "Layout text"
         layout_html: "Layout html"
+        enabled: "Enabled"
+        only_text: "Only text"
   nisetegami:
     flash:
-      alert: "Alert"
-      notice: "Success"
+      alert: "Error"
     are_you_sure: "Are you sure?"
     admin:
       title: "Nisetegami Admin"
@@ -29,7 +30,6 @@ en:
       destroyed: "Templates %{templates} have been destroyed"
       updated: "Template %{template} has been updated"
       index:
-        are_you_sure: "Are you sure?"
         title: "Mail Templates"
         delete: "Delete"
         edit: "Edit"

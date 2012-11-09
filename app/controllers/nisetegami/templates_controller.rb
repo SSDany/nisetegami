@@ -6,9 +6,9 @@ module Nisetegami
       @templates = Template.recent
       params[:enabled] = params[:enabled] == 'true' ? true : false unless params[:enabled].blank?
       %w(enabled mailer mailer_action).each do |attr|
-        @templates = @templates.where(attr => params[attr]) unless params[attr].blank?
+        @templates = @templates.where((attr == 'mailer_action' ? 'action' : attr) => params[attr]) unless params[attr].blank?
       end
-      %w(subject from reply_to cc bcc).each do |attr|
+      %w(name subject from reply_to cc bcc).each do |attr|
         @templates = @templates.where(["#{attr} LIKE ?", "%#{params[attr]}%"]) unless params[attr].blank?
       end
       @templates = @templates.all

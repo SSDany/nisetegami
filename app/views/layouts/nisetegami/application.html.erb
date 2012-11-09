@@ -10,9 +10,13 @@
 
 <div class="container-fluid">
   <% flash.each do |kind, value| %>
-    <div class="alert alert-<%= kind == 'alert' ? 'error' : 'success' %>">
+    <div class="alert alert-<%= kind == :alert ? 'error' : 'success' %>">
       <button type="button" class="close" data-dismiss="alert">×</button>
-      <strong><%= t("nisetetegami.flash.#{kind}") %>:</strong> <%= value %>
+      <% if kind == :alert %>
+        <strong><%= t('nisetegami.flash.alert') %>:</strong> <%= value %>
+      <% else %>
+          <%= value %>
+      <% end %>
     </div>
   <% end %>
 

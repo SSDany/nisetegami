@@ -1,0 +1,56 @@
+en:
+  activerecord:
+    models:
+      nisetegami/template: "Шаблон письма"
+    attributes:
+      nisetegami/template:
+        name: "Название"
+        mailer: "Мэйлер"
+        action: "Экшн"
+        subject: "Тема"
+        from: "От"
+        reply_to: "Ответить"
+        cc: "Копия"
+        bcc: "Скрытая копия"
+        body_text: "Содержание (текст)"
+        body_html: "Содержание (html)"
+        layout_text: "Лэйаут (текст)"
+        layout_html: "Лэйаут (html)"
+        enabled: "Включен"
+        only_text: "Только текст"
+  nisetegami:
+    flash:
+      alert: "Ошибка"
+    are_you_sure: "Вы уверены?"
+    admin:
+      title: "Админка Nisetegami"
+    templates:
+      wrong_email: "Неправильный адрес email"
+      test_email_delivered: "Тестовое сообщение отправлено"
+      destroyed: "Шаблоны %{templates} удалены"
+      updated: "Шаблоны %{template} обновлены"
+      index:
+        title: "Шаблоны писем"
+        delete: "Удалить"
+        edit: "Редактировать"
+        no_templates_found: "Шаблоны не найдены"
+      delete_button:
+        label: "Удалить выбранное"
+      edit:
+        title: "Шаблон %{title}"
+      edit_form_buttons:
+        cancel: "Отмена"
+        update: "Обновить"
+      filters:
+        title: "Фильтры"
+        enabled: "включен"
+        disabled: "выключен"
+        filter: "Отфильтровать"
+        state: "Состояние"
+        reset: "Сбросить"
+      test_mail:
+        title: "Тестовое сообщение"
+        variables: "Переменные"
+        recipient: "Получатель"
+        send: "Отправить"
+        reset: "Сбросить"

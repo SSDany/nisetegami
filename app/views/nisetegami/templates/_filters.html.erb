@@ -4,6 +4,10 @@
   <th colspan="2"><h3><%= t('.title') %></h3></th>
 </tr>
 <tr>
+  <th><%= Nisetegami::Template.human_attribute_name :name %></th>
+  <td><%= text_field_tag :name, params[:name] %></td>
+</tr>
+<tr>
   <th><%= t('.state') %></th>
   <td><%= select_tag :enabled, options_for_select([[''], [t('.enabled'), true], [t('.disabled'), false]], params[:enabled]) %></td>
 </tr>

@@ -9,3 +9,11 @@ form.filters {
 .bottom20 {
   margin-bottom: 10px;
 }
+
+table {
+  white-space: nowrap;
+}
+
+form.filters table {
+  text-align: left;
+}
