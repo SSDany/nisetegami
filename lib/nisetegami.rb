@@ -29,7 +29,15 @@ module Nisetegami
   # optional block to cast a thing (String, Symbol)
   # into a class with liquid_methods
   def self.cast(&block)
-    @@cast ||= ->(thing){ defined?(thing) == 'constant' ? thing : thing.to_s.constantize }
+    @@cast ||= ->(thing) do
+      if defined?(thing) == 'constant'
+        thing
+      elsif const_defined?(thing.to_s)
+        thing.to_s.constantize
+      else
+        String
+      end
+    end
     block_given? ? @@cast = block : @@cast
   end
 
