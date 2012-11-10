@@ -4,7 +4,7 @@ require 'rails/generators/migration'
 class NisetegamiGenerator < Rails::Generators::Base
   include Rails::Generators::Migration
 
-  source_root File.expand_path(File.join(File.dirname(__FILE__)))
+  source_root File.dirname(__FILE__)
 
   def self.next_migration_number(dirname)
     if ActiveRecord::Base.timestamped_migrations

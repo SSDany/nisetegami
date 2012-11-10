@@ -24,11 +24,11 @@ class Nisetegami::Template < ActiveRecord::Base
 
   address_re   = "(?:[^<@]+\\s+<#{Nisetegami.email_re}>|#{Nisetegami.email_re})"
   addresses_re = /^#{address_re}(?:\s*,\s*#{address_re})*$/i
-  validates_format_of :from, :reply_to, :cc, :bcc, with: addresses_re, allow_blank: true
-  validate :name, :subject, :body_text, :layout_text, presence: true
-  validate :body_html, :layout_html, presence: true, unless: :only_text?
-  validate :check_template_syntax
-  validate :check_mailer
+  validates :from, :reply_to, :cc, :bcc, format: {with: addresses_re}, allow_blank: true
+  validates :name, :subject, :body_text, :layout_text, presence: true
+  validates :body_html, :layout_html, presence: true, unless: :only_text?
+  validate  :check_template_syntax
+  validate  :check_mailer
 
   ## callbacks
 

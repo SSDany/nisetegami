@@ -11,7 +11,6 @@ module Nisetegami
       %w(name subject from reply_to cc bcc).each do |attr|
         @templates = @templates.where(["#{attr} LIKE ?", "%#{params[attr]}%"]) unless params[attr].blank?
       end
-      @templates = @templates.all
     end
 
     def actions
