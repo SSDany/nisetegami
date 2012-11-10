@@ -1,6 +1,9 @@
 <div class="control-group">
   <%= f.label attr, class: 'control-label' %>
   <div class="controls">
+    <% if f.object.errors[attr] %>
+      <span class="red"><%= f.object.errors[attr].join(', ') %></span>
+    <% end %>
     <%= (input = yield).present? ? input : f.text_field(attr) %>
   </div>
 </div>
