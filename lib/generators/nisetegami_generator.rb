@@ -1,10 +1,10 @@
 require 'rails/generators'
 require 'rails/generators/migration'
 
-class Nisetegami::TemplatesGenerator < Rails::Generators::Base
+class NisetegamiGenerator < Rails::Generators::Base
   include Rails::Generators::Migration
 
-  source_root File.expand_path(File.join(File.dirname(__FILE__), 'templates'))
+  source_root File.expand_path(File.join(File.dirname(__FILE__)))
 
   def self.next_migration_number(dirname)
     if ActiveRecord::Base.timestamped_migrations
@@ -12,6 +12,10 @@ class Nisetegami::TemplatesGenerator < Rails::Generators::Base
     else
       "%.3d" % (current_migration_number(dirname) + 1)
     end
+  end
+
+  def create_config_file
+    template 'initializers/nisetegami.rb', 'config/initializers/nisetegami.rb'
   end
 
   def create_migrations

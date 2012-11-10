@@ -19,7 +19,7 @@ module Nisetegami
   mattr_reader :mapping
   @@mapping = Nisetegami::Mapping.new
 
-  mattr_accessor :email_re
+  mattr_reader :email_re
   @@email_re = /[-a-z0-9_+\.]+@([-a-z0-9]+\.)+[a-z0-9]{2,}/
 
   def self.configure
