@@ -2,6 +2,8 @@ require_dependency "nisetegami/application_controller"
 
 module Nisetegami
   class TemplatesController < ApplicationController
+    before_filter Nisetegami.auth_filter if Nisetegami.auth_filter
+
     def index
       @templates = Template.recent
       params[:enabled] = params[:enabled] == 'true' ? true : false unless params[:enabled].blank?

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    nisetegami (0.5.0)
+    nisetegami (0.5.2)
       liquid
       rails (~> 3.2)
       roadie (>= 2.3.1)
@@ -107,7 +107,7 @@ GEM
     rake (0.9.2.2)
     rdoc (3.12)
       json (~> 1.4)
-    roadie (2.3.3)
+    roadie (2.3.4)
       actionmailer (> 3.0.0, < 3.3.0)
       css_parser
       nokogiri (>= 1.4.4)
@@ -136,7 +136,7 @@ GEM
     treetop (1.4.12)
       polyglot
       polyglot (>= 0.3.1)
-    tzinfo (0.3.34)
+    tzinfo (0.3.35)
 
 PLATFORMS
   ruby

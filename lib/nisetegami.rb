@@ -22,6 +22,8 @@ module Nisetegami
   mattr_reader :email_re
   @@email_re = /[-a-z0-9_+\.]+@([-a-z0-9]+\.)+[a-z0-9]{2,}/
 
+  mattr_accessor :auth_filter
+
   def self.configure
     yield self
   end
@@ -30,15 +32,13 @@ module Nisetegami
   # into a class with liquid_methods
   def self.cast(&block)
     @@cast ||= ->(thing) do
-      if defined?(thing) == 'constant'
-        thing
-      elsif const_defined?(thing.to_s)
-        thing.to_s.constantize
-      else
+      begin
+        thing = thing.to_s.constantize
+        block_given? ? yield(thing) : thing
+      rescue NameError
         String
       end
     end
-    block_given? ? @@cast = block : @@cast
   end
 
   def self.register(*args)
