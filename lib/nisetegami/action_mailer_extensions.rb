@@ -24,7 +24,8 @@ module Nisetegami
       options = args.first
       if !options[:layout] && @_ar_template
         format = options[:template].identifier.split('.').last
-        options[:layout] = @_ar_template.send("layout_#{format}")
+        layout = @_ar_template.send("layout_#{format}")
+        options[:layout] = layout unless layout.blank?
       end
       render_without_layout(*args, &block)
     end
