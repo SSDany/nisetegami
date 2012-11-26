@@ -69,7 +69,8 @@ module Nisetegami
 
     def collect_responses_and_parts_order_with_required_parts_order(headers)
       responses, parts_order = collect_responses_and_parts_order_without_required_parts_order(headers)
-      [responses, parts_order || responses.map { |r| r[:content_type] }]
+      parts_order ||= responses.map { |r| r[:content_type] } if @_ar_template
+      [responses, parts_order]
     end
 
   end

@@ -11,19 +11,19 @@ shared_examples_for "multipart template" do
   specify { @message.body.parts.size.should == 2 }
 
   it "renders a text/plain part" do
-    part = @message.body.parts.last
+    part = @message.body.parts.first
     part.content_type.should =~ /^text\/plain/
     part.to_s.should include('The quick brown fox jumps over the lazy dog')
   end
 
   it "renders a text/html part" do
-    part = @message.body.parts.first
+    part = @message.body.parts.last
     part.content_type.should =~ /^text\/html/
     part.to_s.should include('The quick brown fox jumps over the lazy dog')
   end
 
   it "renders html layout" do
-    part = @message.body.parts.first
+    part = @message.body.parts.last
     part.to_s.should include('default.html.erb')
   end
 

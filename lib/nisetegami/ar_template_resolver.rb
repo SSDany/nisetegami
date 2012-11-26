@@ -7,7 +7,7 @@ class Nisetegami::ARTemplateResolver < ActionView::Resolver
   def find_templates(name, prefix, partial, details)
     Nisetegami::Template.by_mailer(prefix.classify).by_action(name).map do |record|
       formats = [:text]
-      formats.unshift(:html) unless record.only_text?
+      formats << :html unless record.only_text?
       formats.map do |format|
         source     = record.send("body_#{format}")
         identifier = "Nisetegami::Template.#{record.id}.#{format}"

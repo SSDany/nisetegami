@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    nisetegami (0.5.2)
+    nisetegami (0.5.3)
       liquid
       rails (~> 3.2)
       roadie (>= 2.3.1)
