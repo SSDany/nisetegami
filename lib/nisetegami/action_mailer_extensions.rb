@@ -31,9 +31,7 @@ module Nisetegami
     end
 
     def mail_with_template(headers = {}, &block)
-      # maybe there is better way? - do not want to do query it (despite cache is used) for second time
-      @_ar_template = Template.by_mailer(self.class).by_action(action_name).first
-      if @_ar_template
+      if @_ar_template = ARTemplateResolver.instance.find_ar_template(self.class.to_s, action_name)
         self.action_name ||= @_ar_template.action.to_s
         # think about this ugly shit
         vars = instance_variables.inject({}) do |hsh, var|
