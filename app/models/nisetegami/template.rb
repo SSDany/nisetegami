@@ -34,6 +34,7 @@ class Nisetegami::Template < ActiveRecord::Base
   ## callbacks
 
   before_validation :set_name_if_necessary
+  after_save :clear_ar_template_resolver_cache
 
   ## class-methods
 
@@ -135,6 +136,11 @@ class Nisetegami::Template < ActiveRecord::Base
 
   def set_name_if_necessary
     self.name = "#{mailer}##{action}" unless name.present?
+  end
+
+  def clear_ar_template_resolver_cache
+    Nisetegami::ARTemplateResolver.instance.clear_cache_for(mailer.to_s, action)
+    true
   end
 
 end
