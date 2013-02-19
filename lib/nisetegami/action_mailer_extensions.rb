@@ -23,7 +23,7 @@ module Nisetegami
     def render_with_layout(*args, &block)
       options = args.first
       if !options[:layout] && @_ar_template
-        format = options[:template].identifier.split('.').last
+        format = options[:template].identifier.split('.')[1]
         layout = @_ar_template.send("layout_#{format}")
         options[:layout] = layout unless layout.blank?
       end
