@@ -39,10 +39,15 @@ class Nisetegami::Template < ActiveRecord::Base
   ## class-methods
 
   # Accepts an instance of the ActionMailer::Base subclass
+  # or Hash with mailer and action names
   # and attempts to find associated template using
   # name and action_name of the mailer.
-  def self.lookup(mailer_instance)
-    relation.where(mailer: mailer_instance.class.name, action: mailer_instance.action_name).first
+  def self.lookup(arg)
+    if arg.respond_to?(:action_name)
+      relation.where(mailer: mailer_instance.class.name, action: mailer_instance.action_name).first
+    else
+      relation.where(mailer: arg[:mailer].to_s.classify, action: arg[:action].to_s.underscore).first
+    end
   end
 
   def layout_html_path
