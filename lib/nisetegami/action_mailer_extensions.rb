@@ -15,7 +15,7 @@ module Nisetegami
         new.testing do |instance|
           instance.action_name = action.to_s
           variables.each { |k, v| instance.instance_variable_set("@#{k}", v) } if variables
-          instance.mail to: recipient
+          instance.mail to: recipient, from: 'test@test.com'
         end
       end
     end
