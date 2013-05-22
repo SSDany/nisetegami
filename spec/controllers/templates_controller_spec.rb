@@ -40,6 +40,7 @@ describe Nisetegami::TemplatesController do
     end
 
     it "renders edit page if params are not valid" do
+      template.update_column :enabled, true
       post :update, id: template.id, template: {subject: ''}, use_route: :nisetegami
       response.should be_success
       response.should render_template('edit')
