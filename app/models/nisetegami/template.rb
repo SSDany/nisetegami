@@ -27,7 +27,7 @@ class Nisetegami::Template < ActiveRecord::Base
   validates :from, :reply_to, :cc, :bcc, format: {with: addresses_re}, allow_blank: true
   validates :name, presence: true
   validates :subject, :body_text, presence: true, if: :enabled
-  validates :body_html, presence: true, if: -> (obj) { obj.enabled? && !obj.only_text? }
+  validates :body_html, presence: true, if: ->(obj){ obj.enabled? && !obj.only_text? }
   validates :action, uniqueness: {scope: :mailer}
   validate  :check_template_syntax
   validate  :check_mailer
