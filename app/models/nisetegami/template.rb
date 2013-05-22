@@ -25,9 +25,9 @@ class Nisetegami::Template < ActiveRecord::Base
   address_re   = "(?:[^<@]+\\s+<#{Nisetegami.email_re}>|#{Nisetegami.email_re})"
   addresses_re = /^#{address_re}(?:\s*,\s*#{address_re})*$/i
   validates :from, :reply_to, :cc, :bcc, format: {with: addresses_re}, allow_blank: true
-  validates :name, :subject, :body_text, presence: true
+  validates :name, presence: true
   validates :subject, :body_text, presence: true, if: :enabled
-  validates :body_html, presence: true, if: -> (obj) { obj.enabled && !obj.only_text? }
+  validates :body_html, presence: true, if: -> (obj) { obj.enabled? && !obj.only_text? }
   validates :action, uniqueness: {scope: :mailer}
   validate  :check_template_syntax
   validate  :check_mailer
