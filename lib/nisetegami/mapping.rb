@@ -31,9 +31,6 @@ module Nisetegami
         variables = expand_locals(*locals).map{ |v| "{{ #{v} }}" }.join(", ")
 
         Nisetegami::Template.create!(
-          subject:   "Subject",
-          body_text: "You can use the following variables: #{variables}. Format: text.",
-          body_html: "You can use the following variables: #{variables}. Format: html.",
           mailer:  mailer,
           action:  action,
           enabled: false
