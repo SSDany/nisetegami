@@ -66,6 +66,6 @@ shared_examples_for "disabled template" do
   specify { @message.perform_deliveries.should == false }
   specify { @message.deliver; Nisetegami::TestMailer.deliveries.size.should == 0 }
 
-  specify { @message.body.parts.should be_blank }
-  specify { @message.body.should be_blank }
+  #specify { @message.body.parts.should be_blank }
+  #specify { @message.body.should be_blank }
 end

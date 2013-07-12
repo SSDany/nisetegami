@@ -23,8 +23,10 @@ class Nisetegami::ARTemplateResolver < ActionView::Resolver
     unless ar_template = find_ar_template(prefix.classify, name)
       []
     else
-      formats = [:text]
-      formats << :html unless ar_template.only_text?
+      formats = []
+      formats << :text unless ar_template.body_text.nil?
+      formats << :html unless ar_template.only_text? || ar_template.body_html.blank?
+
       formats.map do |format|
         source     = ar_template.send("body_#{format}")
         identifier = "Nisetegami::Template.#{ar_template.id}.#{format}"

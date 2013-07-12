@@ -134,7 +134,7 @@ class Nisetegami::Template < ActiveRecord::Base
   end
 
   def try_parse_template(attribute)
-    Liquid::Template.parse(self[attribute])
+    Liquid::Template.parse(self[attribute] || "")
   rescue Liquid::SyntaxError => error
     errors.add(attribute, :liquid_syntax_error, message: error.message)
     false
