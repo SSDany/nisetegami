@@ -3,6 +3,9 @@ rvm:
   - 1.9.3
   - 2.0.0
 
+before_script:
+  - bundle exec rake db:test:prepare
+
 notifications:
   email:    false
   campfire: prophotos:1df46f81bb47a9188402d032e8eb48f55c1c7a17@427461
