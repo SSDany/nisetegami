@@ -44,7 +44,8 @@ module Nisetegami
         vars = instance_variables.inject({}) do |hsh, var|
           unless var =~ /@_/
             template_var = instance_variable_get(var)
-            instance_variable_set(var, template_var.is_a?(Array) ? template_var.map { |v| try_decorate(v) } : try_decorate(template_var))
+            template_var = template_var.is_a?(Array) ? template_var.map { |v| try_decorate(v) } : try_decorate(template_var)
+            instance_variable_set(var, template_var)
             hsh[var[1..-1].to_sym] = template_var
           end
           hsh
