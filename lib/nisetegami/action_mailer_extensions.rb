@@ -31,15 +31,20 @@ module Nisetegami
     end
 
     def mail_with_template(headers = {}, &block)
+      def try_decorate(var)
+        if var.class != (casted = Nisetegami.cast[var.class])
+          var = casted.new(var)
+        end
+        var
+      end
+
       if @_ar_template = ARTemplateResolver.instance.find_ar_template(self.class.to_s, action_name)
         self.action_name ||= @_ar_template.action.to_s
         # think about this ugly shit
         vars = instance_variables.inject({}) do |hsh, var|
           unless var =~ /@_/
             template_var = instance_variable_get(var)
-            if template_var.class != (casted = Nisetegami.cast[template_var.class])
-              template_var = instance_variable_set(var, casted.new(template_var))
-            end
+            instance_variable_set(var, template_var.is_a?(Array) ? template_var.map { |v| try_decorate(v) } : try_decorate(template_var))
             hsh[var[1..-1].to_sym] = template_var
           end
           hsh
