@@ -6,7 +6,7 @@ class Nisetegami::Template < ActiveRecord::Base
 
   ## constants
 
-  CONTENT = [:subject, :body_html, :body_text]
+  CONTENT = [:subject, :body_text, :body_html]
   HEADERS = [:cc, :bcc, :reply_to, :from]
 
   ## scopes
@@ -27,7 +27,6 @@ class Nisetegami::Template < ActiveRecord::Base
   validates :from, :reply_to, :cc, :bcc, format: {with: addresses_re}, allow_blank: true
   validates :name, presence: true
   validates :subject, :body_text, presence: true, if: :enabled
-  validates :body_html, presence: true, if: ->(obj){ obj.enabled? && !obj.only_text? }
   validates :action, uniqueness: {scope: :mailer}
   validate  :check_template_syntax
   validate  :check_mailer
@@ -73,7 +72,6 @@ class Nisetegami::Template < ActiveRecord::Base
   def variable_mapping
     @_variable_mapping ||= begin
       mapping.each_with_object([]) do |(variable, thing), array|
-        # @todo: store variable_mapping in mapping instead of classes [?]
         meths = Nisetegami::Utils.liquid_methods_for(Nisetegami.cast[thing])
         array << (meths.blank? ? variable.to_sym : { variable.to_sym => meths })
       end
@@ -92,13 +90,10 @@ class Nisetegami::Template < ActiveRecord::Base
     end
 
     define_method "render_#{attribute}" do |variables|
-      return nil unless self[attribute]
+      return nil unless self.send("prepared_#{attribute}")
       # do not parse invalid templates
-      if instance_variable_get("@#{attribute}_template").nil?
-        instance_variable_set("@#{attribute}_template", try_parse_template(attribute))
-      end
-      instance_variable_get("@#{attribute}_template") \
-        .try(:render, variables.stringify_keys.select { |k, v| k.in?(variable_names) })
+      instance_variable_set("@#{attribute}_template", try_parse_template(attribute)) if instance_variable_get("@#{attribute}_template").nil?
+      instance_variable_get("@#{attribute}_template").try(:render, variables.stringify_keys.select { |k, v| k.in?(variable_names) })
     end
   end
 
@@ -112,6 +107,22 @@ class Nisetegami::Template < ActiveRecord::Base
   def message(recipient, variables)
     return nil unless valid?
     mailer.testing(action, recipient, variables)
+  end
+
+  def prepared_subject
+    subject
+  end
+
+  def prepared_body_text
+    body_text
+  end
+
+  def prepared_body_html
+    if !only_text? && body_html.blank?
+      ::Redcarpet::Markdown.new(::Redcarpet::Render::HTML.new(filter_html: true), {autolink: true}).render(body_text)
+    else
+      body_html
+    end
   end
 
   private
@@ -134,14 +145,14 @@ class Nisetegami::Template < ActiveRecord::Base
   end
 
   def try_parse_template(attribute)
-    Liquid::Template.parse(self[attribute] || "")
+    Liquid::Template.parse send("prepared_#{attribute}")
   rescue Liquid::SyntaxError => error
     errors.add(attribute, :liquid_syntax_error, message: error.message)
     false
   end
 
   def set_name_if_necessary
-    self.name = "#{mailer}##{action}" unless name.present?
+    self.name = "#{mailer}##{action}" if name.blank?
   end
 
   def clear_ar_template_resolver_cache
