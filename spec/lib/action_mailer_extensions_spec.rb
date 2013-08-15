@@ -11,8 +11,9 @@ describe Nisetegami::ActionMailerExtensions do
     context "when template disabled" do
       before do
         @template.update_attributes(enabled: false)
-        @message = Nisetegami::TestMailer.send(@template.action, 'fox', 'dog')
       end
+
+      let(:message) { Nisetegami::TestMailer.send(@template.action, 'fox', 'dog') }
 
       specify { @template.should_not be_enabled }
       it_should_behave_like 'disabled template'
@@ -21,8 +22,20 @@ describe Nisetegami::ActionMailerExtensions do
     context "when template enabled" do
       before do
         @template.update_attributes(enabled: true)
-        @message = Nisetegami::TestMailer.send(@template.action, 'fox', 'dog')
       end
+
+      let(:message) { Nisetegami::TestMailer.send(@template.action, 'fox', 'dog') }
+
+      specify { @template.should be_enabled }
+      it_should_behave_like 'multipart template'
+    end
+
+    context "when template enabled" do
+      before do
+        @template.update_attributes(enabled: true)
+      end
+
+      let(:message) { Nisetegami::TestMailer.send(@template.action, 'fox', 'dog') }
 
       specify { @template.should be_enabled }
       it_should_behave_like 'multipart template'
@@ -32,12 +45,13 @@ describe Nisetegami::ActionMailerExtensions do
       before do
         ActionMailer::Base.perform_deliveries = false
         @template.update_attributes(enabled: true)
-        @message = Nisetegami::TestMailer.send(@template.action, 'fox', 'dog')
       end
 
       after do
         ActionMailer::Base.perform_deliveries = true
       end
+
+      let(:message) { Nisetegami::TestMailer.send(@template.action, 'fox', 'dog') }
 
       it_should_behave_like 'disabled template'
     end
@@ -49,8 +63,9 @@ describe Nisetegami::ActionMailerExtensions do
     context "when template disabled" do
       before do
         @template.update_attributes(enabled: false)
-        @message = Nisetegami::TestMailer.send(@template.action, 'fox', 'dog')
       end
+
+      let(:message) { Nisetegami::TestMailer.send(@template.action, 'fox', 'dog') }
 
       specify { @template.should_not be_enabled }
       it_should_behave_like 'disabled template'
@@ -59,8 +74,9 @@ describe Nisetegami::ActionMailerExtensions do
     context "when template enabled" do
       before do
         @template.update_attributes(enabled: true)
-        @message = Nisetegami::TestMailer.send(@template.action, 'fox', 'dog')
       end
+
+      let(:message) { Nisetegami::TestMailer.send(@template.action, 'fox', 'dog') }
 
       specify { @template.should be_enabled }
       it_should_behave_like 'text template'
@@ -70,12 +86,13 @@ describe Nisetegami::ActionMailerExtensions do
       before do
         ActionMailer::Base.perform_deliveries = false
         @template.update_attributes(enabled: true)
-        @message = Nisetegami::TestMailer.send(@template.action, 'fox', 'dog')
       end
       
       after do
         ActionMailer::Base.perform_deliveries = true
       end
+
+      let(:message) { Nisetegami::TestMailer.send(@template.action, 'fox', 'dog') }
 
       it_should_behave_like 'disabled template'
     end

@@ -55,12 +55,12 @@ describe Nisetegami::Template do
     end
   end
 
-  describe "content" do
-    before(:each) do
-      @template = FactoryGirl.create(:simple_nisetegami_template)
-    end
+  Nisetegami::Template::CONTENT.each do |attribute|
+    describe "#render_{attribute}" do
+      before(:each) do
+        @template = FactoryGirl.create(:simple_nisetegami_template)
+      end
 
-    Nisetegami::Template::CONTENT.each do |attribute|
       it "provides a #render_#{attribute} method" do
         content = @template.send("render_#{attribute}", fox: 'fox', dog: 'dog')
         content.should == "The quick brown fox jumps over the lazy dog."
@@ -76,6 +76,26 @@ describe Nisetegami::Template do
         content = @template.send("render_#{attribute}", fox: 'fox', dog: 'dog', unknown: 'unknown')
         content.should == 'fox, dog, '
       end
+    end
+  end
+
+  describe "#render_body_html, when body_html is blank" do
+    before(:each) do
+      @template = FactoryGirl.create(:simple_nisetegami_template)
+      @template.body_html = ""
+      @template.body_text = "Quick brown *{{fox}}* jumps over lazy **{{dog}}**."
+    end
+
+    subject { @template.send(:render_body_html, fox: 'fox', dog: 'dog') }
+
+    it "renders HTML using markdown, if only_text is false" do
+      @template.only_text = false
+      should == "<p>Quick brown <em>fox</em> jumps over lazy <strong>dog</strong>.</p>\n"
+    end
+
+    it "returns nil otherwise" do
+      @template.only_text = true
+      should be_nil
     end
   end
 
@@ -104,8 +124,9 @@ describe Nisetegami::Template do
       context "when template disabled" do
         before(:each) do
           @template.update_attributes(enabled: false)
-          @message = @template.message(@recipient, fox: 'fox', dog: 'dog')
         end
+
+        let(:message) { @template.message(@recipient, fox: 'fox', dog: 'dog') }
 
         specify { @template.should_not be_enabled }
         it_should_behave_like 'multipart template'
@@ -114,8 +135,9 @@ describe Nisetegami::Template do
       context "when template enabled" do
         before(:each) do
           @template.update_attributes(enabled: true)
-          @message = @template.message(@recipient, fox: 'fox', dog: 'dog')
         end
+
+        let(:message) { @template.message(@recipient, fox: 'fox', dog: 'dog') }
 
         specify { @template.should be_enabled }
         it_should_behave_like 'multipart template'
@@ -128,8 +150,9 @@ describe Nisetegami::Template do
       context "when template disabled" do
         before(:each) do
           @template.update_attributes(enabled: false)
-          @message = @template.message(@recipient, fox: 'fox', dog: 'dog')
         end
+
+        let(:message) { @template.message(@recipient, fox: 'fox', dog: 'dog') }
 
         specify { @template.should_not be_enabled }
         it_should_behave_like 'text template'
@@ -138,8 +161,9 @@ describe Nisetegami::Template do
       context "when template enabled" do
         before(:each) do
           @template.update_attributes(enabled: true)
-          @message = @template.message(@recipient, fox: 'fox', dog: 'dog')
         end
+
+        let(:message) { @template.message(@recipient, fox: 'fox', dog: 'dog') }
 
         specify { @template.should be_enabled }
         it_should_behave_like 'text template'
