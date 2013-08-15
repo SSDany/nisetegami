@@ -1,5 +1,6 @@
 require 'roadie'
 require 'liquid'
+require 'redcarpet'
 
 require 'nisetegami/action_mailer_extensions'
 require 'nisetegami/liquid_template_handler'
