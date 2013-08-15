@@ -54,7 +54,6 @@ module Nisetegami
       end
       mail_without_template(headers, &block).tap do |m|
         m.perform_deliveries &= testing? || !@_ar_template || @_ar_template.enabled
-        #m.body = nil unless m.perform_deliveries # better to remove corresponding specs??
       end
     end
 
