@@ -91,7 +91,7 @@ class Nisetegami::Template < ActiveRecord::Base
     define_method "render_#{attribute}" do |variables|
       return nil unless self.send("prepared_#{attribute}")
       view = ActionView::Base.new(nil, variables.stringify_keys.select { |k, v| k.in?(variable_names) }, nil, nil)
-      template_handler_for(attribute).new(view).render(send("prepared_#{attribute}"))
+      handler_for(attribute).new(view).render(send("prepared_#{attribute}"))
     end
   end
 
@@ -119,7 +119,7 @@ class Nisetegami::Template < ActiveRecord::Base
     !only_text? && body_html.blank? ? body_text : body_html
   end
 
-  def template_handler_for(attribute)
+  def handler_for(attribute)
     key = attribute == :body_html && !only_text? && body_html.blank? ? :liquid_with_markdown : :liquid
     ActionView::Template.registered_template_handler(key)
   end
