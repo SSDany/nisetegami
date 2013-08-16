@@ -9,7 +9,7 @@ class ActionView::Template::Handlers::LiquidWithMarkdown < ActionView::Template:
   end
 
   def renderer
-    @_renderer ||= ::Redcarpet::Markdown.new(::Redcarpet::Render::HTML.new(filter_html: true), extensions)
+    @_renderer ||= ::Redcarpet::Markdown.new(::Redcarpet::Render::HTML.new, extensions)
   end
 
 end
