@@ -90,8 +90,11 @@ class Nisetegami::Template < ActiveRecord::Base
 
     define_method "render_#{attribute}" do |variables|
       return nil unless self.send("prepared_#{attribute}")
-      view = ActionView::Base.new(nil, variables.stringify_keys.select { |k, v| k.in?(variable_names) }, nil, nil)
-      Nisetegami::ARTemplateResolver.instance.handler_for(self, attribute).new(view).render(send("prepared_#{attribute}"))
+      format = attribute == :body_html ? :html : :text
+      locals = variables.stringify_keys.select { |k,v| k.in?(variable_names) }
+      Nisetegami::ARTemplateResolver.instance.
+        handler_for(self, format).new(ActionView::Base.new(nil, locals, nil, [format])).
+        render(send("prepared_#{attribute}"))
     end
   end
 
