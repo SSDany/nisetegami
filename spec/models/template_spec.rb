@@ -83,10 +83,11 @@ describe Nisetegami::Template do
     before(:each) do
       @template = FactoryGirl.create(:simple_nisetegami_template)
       @template.body_html = ""
-      @template.body_text = "Quick brown *{{fox}}* jumps over lazy **{{dog}}**."
+      @template.body_text = "Quick {{ color_of_the_fox }} *{{fox}}* jumps over lazy **{{dog}}**."
+      Nisetegami.configure { |c| c.register @template[:mailer], @template.action, fox: 'String', dog: 'String', color_of_the_fox: 'String' }
     end
 
-    subject { @template.send(:render_body_html, fox: 'fox', dog: 'dog') }
+    subject { @template.send(:render_body_html, fox: 'fox', dog: 'dog', color_of_the_fox: 'brown') }
 
     it "renders HTML using markdown, if only_text is false" do
       @template.only_text = false

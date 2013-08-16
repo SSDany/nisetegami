@@ -118,11 +118,11 @@ class Nisetegami::Template < ActiveRecord::Base
   end
 
   def prepared_body_html
-    if !only_text? && body_html.blank?
-      ::Redcarpet::Markdown.new(::Redcarpet::Render::HTML.new(filter_html: true), {autolink: true}).render(body_text)
-    else
-      body_html
-    end
+    auto_html? ? body_text : body_html
+  end
+
+  def auto_html?
+    !only_text? && body_html.blank?
   end
 
   private

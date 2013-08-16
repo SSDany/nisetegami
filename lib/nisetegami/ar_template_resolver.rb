@@ -5,13 +5,13 @@ class Nisetegami::ARTemplateResolver < ActionView::Resolver
   include Singleton
 
   def clear_cache_for(mailer, action)
-    key = "#{mailer.classify}##{action}"
+    key = "#{mailer.to_s.classify}##{action}"
     [@_templates, @_ar_templates].each { |hsh| hsh.try(:delete, key) }
   end
 
   def find_ar_template(mailer, action)
     @_ar_templates ||= {}
-    key = "#{mailer}##{action}"
+    key = "#{mailer.to_s.classify}##{action}"
     if @_ar_templates.has_key?(key)
       @_ar_templates[key]
     else
@@ -20,7 +20,7 @@ class Nisetegami::ARTemplateResolver < ActionView::Resolver
   end
 
   def find_templates(name, prefix, partial, details)
-    unless ar_template = find_ar_template(prefix.classify, name)
+    unless ar_template = find_ar_template(prefix, name)
       []
     else
       formats = []
@@ -28,9 +28,9 @@ class Nisetegami::ARTemplateResolver < ActionView::Resolver
       formats << :html unless ar_template.only_text?
 
       formats.map do |format|
-        source     = ar_template.reload.send("prepared_body_#{format}")
+        source     = ar_template.send("prepared_body_#{format}")
         identifier = "Nisetegami::Template.#{ar_template.id}.#{format}"
-        handler    = ActionView::Template.registered_template_handler(:liquid)
+        handler    = ActionView::Template.registered_template_handler(:liquid_with_markdown)
         details = {
           format: Mime[format],
           virtual_path: "#{ar_template.mailer.to_s.underscore}/#{ar_template.action}",
