@@ -3,7 +3,7 @@ class ActionView::Template::Handlers::LiquidWithMarkdown < ActionView::Template:
   class_attribute :extensions
   self.extensions = {autolink: true, space_after_headers: true}
 
-  def render(template, local_assigns = {})
+  def render(source, local_assigns = {})
     liquid = super
     @view.formats.include?(:html) ? renderer.render(liquid) : liquid
   end
