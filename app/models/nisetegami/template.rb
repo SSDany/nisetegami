@@ -86,14 +86,12 @@ class Nisetegami::Template < ActiveRecord::Base
   CONTENT.each do |attribute|
     define_method "#{attribute}=" do |raw|
       self[attribute] = raw.blank? ? nil : raw
-      instance_variable_set("@#{attribute}_template", nil)
     end
 
     define_method "render_#{attribute}" do |variables|
       return nil unless self.send("prepared_#{attribute}")
-      # do not parse invalid templates
-      instance_variable_set("@#{attribute}_template", try_parse_template(attribute)) if instance_variable_get("@#{attribute}_template").nil?
-      instance_variable_get("@#{attribute}_template").try(:render, variables.stringify_keys.select { |k, v| k.in?(variable_names) })
+      view = ActionView::Base.new(nil, variables.stringify_keys.select { |k, v| k.in?(variable_names) }, nil, nil)
+      template_handler_for(attribute).new(view).render(send("prepared_#{attribute}"))
     end
   end
 
@@ -118,11 +116,12 @@ class Nisetegami::Template < ActiveRecord::Base
   end
 
   def prepared_body_html
-    auto_html? ? body_text : body_html
+    !only_text? && body_html.blank? ? body_text : body_html
   end
 
-  def auto_html?
-    !only_text? && body_html.blank?
+  def template_handler_for(attribute)
+    key = attribute == :body_html && !only_text? && body_html.blank? ? :liquid_with_markdown : :liquid
+    ActionView::Template.registered_template_handler(key)
   end
 
   private
