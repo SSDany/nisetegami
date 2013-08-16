@@ -30,7 +30,7 @@ class Nisetegami::ARTemplateResolver < ActionView::Resolver
       formats.map do |format|
         source     = ar_template.send("prepared_body_#{format}")
         identifier = "Nisetegami::Template.#{ar_template.id}.#{format}"
-        handler    = ar_template.handler_for(:"body_#{format}")
+        handler    = handler_for(ar_template, :"body_#{format}")
         details = {
           format: Mime[format],
           virtual_path: "#{ar_template.mailer.to_s.underscore}/#{ar_template.action}",
@@ -40,4 +40,10 @@ class Nisetegami::ARTemplateResolver < ActionView::Resolver
       end
     end
   end
+
+  def handler_for(ar_template, attribute)
+    key = attribute == :body_html && ar_template.auto_html? ? :liquid_with_markdown : :liquid
+    ActionView::Template.registered_template_handler(key)
+  end
+
 end
