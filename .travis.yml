@@ -8,4 +8,4 @@ before_script:
 
 notifications:
   email:    false
-  campfire: prophotos:1df46f81bb47a9188402d032e8eb48f55c1c7a17@427461
+  flowdock: f1b1bbd7df546374e3a9b1ec5447803d
