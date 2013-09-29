@@ -10,3 +10,4 @@ spec/dummy/.sass-cache
 .idea
 *.gem
 Gemfile.lock
+.tddium*
