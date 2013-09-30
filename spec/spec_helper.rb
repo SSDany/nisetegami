@@ -1,5 +1,8 @@
 require 'coveralls'
+require "codeclimate-test-reporter"
+
 Coveralls.wear!
+CodeClimate::TestReporter.start
 
 ENV['RAILS_ENV'] = 'test'
 Bundler.require(:development)

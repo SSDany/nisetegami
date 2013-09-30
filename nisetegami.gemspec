@@ -15,10 +15,10 @@ Gem::Specification.new do |s|
 
   s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.md"]
 
-  s.add_dependency 'rails',  '~> 3.2'
-  s.add_dependency 'roadie', '>= 2.3.1'
-  s.add_dependency 'liquid'
-  s.add_dependency 'redcarpet'
+  s.add_runtime_dependency 'rails',  '~> 3.2'
+  s.add_runtime_dependency 'roadie', '>= 2.3.1'
+  s.add_runtime_dependency 'liquid'
+  s.add_runtime_dependency 'redcarpet'
 
   s.add_development_dependency 'sqlite3'
   s.add_development_dependency 'rails', '~> 3.2'
@@ -27,4 +27,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec-rails'
   s.add_development_dependency 'factory_girl_rails'
   s.add_development_dependency 'coveralls'
+  s.add_development_dependency 'codeclimate-test-reporter'
 end
