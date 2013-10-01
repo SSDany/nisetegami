@@ -2,7 +2,7 @@ class Nisetegami::Template < ActiveRecord::Base
 
   attr_accessible :name, :mailer, :action, :subject, :from,
                   :reply_to, :cc, :bcc, :enabled, :only_text,
-                  :layout_text, :body_text, :layout_html, :body_html
+                  :layout_text, :body_text, :layout_html, :body_html, :handler
 
   ## constants
 
@@ -28,12 +28,13 @@ class Nisetegami::Template < ActiveRecord::Base
   validates :name, presence: true
   validates :subject, :body_text, presence: true, if: :enabled
   validates :action, uniqueness: {scope: :mailer}
+  validates :handler, presence: true, inclusion: %w(liquid erb)
   validate  :check_template_syntax
   validate  :check_mailer
 
   ## callbacks
 
-  before_validation :set_name_if_necessary
+  before_validation :set_defaults
   after_save :clear_ar_template_resolver_cache
 
   ## class-methods
@@ -92,10 +93,20 @@ class Nisetegami::Template < ActiveRecord::Base
       return nil unless self.send("prepared_#{attribute}")
       format = attribute == :body_html ? :html : :text
       locals = variables.stringify_keys.select { |k,v| k.in?(variable_names) }
-      Nisetegami::ARTemplateResolver.instance.
-        handler_for(self, format).new(ActionView::Base.new(nil, locals, nil, [format])).
-        render(send("prepared_#{attribute}"))
+      ActionView::Template.
+        new(send("prepared_#{attribute}"), identifier(format), handler_for(format), {format: Mime[format]}).
+        render(ActionView::Base.new(nil, locals, nil, [format]), locals)
     end
+  end
+
+  def handler_for(format)
+    _handler = self.handler
+    _handler = "#{_handler}_with_markdown" if format == :html && auto_html?
+    ActionView::Template.registered_template_handler(_handler.to_sym)
+  end
+
+  def identifier(format)
+    "Nisetegami::Template.#{self.id}.#{format}"
   end
 
   def headers(variables = {})
@@ -128,6 +139,11 @@ class Nisetegami::Template < ActiveRecord::Base
 
   private
 
+  def set_defaults
+    self.handler = 'liquid' if self.handler.blank?
+    self.name = "#{mailer}##{action}" if self.name.blank?
+  end
+
   def associated_stylesheets
     @@asset_provider ||= Nisetegami::AssetProvider.new(Roadie.current_provider.prefix)
     stylesheets = [:default]
@@ -142,7 +158,7 @@ class Nisetegami::Template < ActiveRecord::Base
   end
 
   def check_template_syntax
-    CONTENT.each { |attribute| try_parse_template(attribute) }
+    CONTENT.each { |attribute| try_parse_template(attribute) } if handler == "liquid"
   end
 
   def try_parse_template(attribute)
@@ -150,10 +166,6 @@ class Nisetegami::Template < ActiveRecord::Base
   rescue Liquid::SyntaxError => error
     errors.add(attribute, :liquid_syntax_error, message: error.message)
     false
-  end
-
-  def set_name_if_necessary
-    self.name = "#{mailer}##{action}" if name.blank?
   end
 
   def clear_ar_template_resolver_cache

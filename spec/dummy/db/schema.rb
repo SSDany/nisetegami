@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120409080913) do
+ActiveRecord::Schema.define(:version => 20131001185331) do
 
   create_table "nisetegami_templates", :force => true do |t|
     t.string   "mailer"
@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(:version => 20120409080913) do
     t.boolean  "only_text",   :default => true,  :null => false
     t.datetime "created_at",                     :null => false
     t.datetime "updated_at",                     :null => false
+    t.string   "handler"
   end
 
   add_index "nisetegami_templates", ["mailer", "action"], :name => "index_nisetegami_templates_on_mailer_and_action", :unique => true
