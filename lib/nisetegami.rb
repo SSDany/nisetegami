@@ -5,6 +5,7 @@ require 'redcarpet'
 require 'nisetegami/action_mailer_extensions'
 require 'nisetegami/handlers/liquid'
 require 'nisetegami/handlers/liquid_with_markdown'
+require 'nisetegami/handlers/erb_with_markdown'
 require 'nisetegami/ar_template_resolver'
 require 'nisetegami/asset_provider'
 require 'nisetegami/exceptions'
@@ -23,8 +24,8 @@ module Nisetegami
 
   mattr_reader :email_re
   @@email_re = /[-a-z0-9_+\.]+@([-a-z0-9]+\.)+[a-z0-9]{2,}/
-
-  mattr_accessor :auth_filter
+  
+  mattr_accessor :auth_filter 
 
   def self.configure
     yield self
