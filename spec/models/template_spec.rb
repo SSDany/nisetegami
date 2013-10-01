@@ -57,46 +57,95 @@ describe Nisetegami::Template do
 
   Nisetegami::Template::CONTENT.each do |attribute|
     describe "#render_{attribute}" do
-      before(:each) do
-        @template = FactoryGirl.create(:simple_nisetegami_template)
+      context "with liquid" do
+        before(:each) do
+          @template = FactoryGirl.create(:simple_nisetegami_liquid_template)
+        end
+
+        it "provides a #render_#{attribute} method" do
+          content = @template.send("render_#{attribute}", fox: 'fox', dog: 'dog')
+          content.should == "The quick brown fox jumps over the lazy dog."
+        end
+
+        it "requires #{attribute} to be a valid liquid template" do
+          @template.send("#{attribute}=", "{{ invalid }")
+          @template.should_not be_valid
+        end
+
+        it "ignores all variables wich are not in the #variable_names" do
+          @template.send("#{attribute}=", "{{ fox }}, {{ dog }}, {{ unknown }}")
+          content = @template.send("render_#{attribute}", fox: 'fox', dog: 'dog', unknown: 'unknown')
+          content.should == 'fox, dog, '
+        end
       end
 
-      it "provides a #render_#{attribute} method" do
-        content = @template.send("render_#{attribute}", fox: 'fox', dog: 'dog')
-        content.should == "The quick brown fox jumps over the lazy dog."
-      end
+      context "with erb" do
+        before(:each) do
+          @template = FactoryGirl.create(:simple_nisetegami_erb_template)
+        end
 
-      it "requires #{attribute} to be a valid liquid template" do
-        @template.send("#{attribute}=", "{{ invalid }")
-        @template.should_not be_valid
-      end
+        it "provides a #render_#{attribute} method" do
+          content = @template.send("render_#{attribute}", fox: 'fox', dog: 'dog')
+          content.should == "The quick brown fox jumps over the lazy dog."
+        end
 
-      it "ignores all variables wich are not in the #variable_names" do
-        @template.send("#{attribute}=", "{{ fox }}, {{ dog }}, {{ unknown }}")
-        content = @template.send("render_#{attribute}", fox: 'fox', dog: 'dog', unknown: 'unknown')
-        content.should == 'fox, dog, '
+        it "requires #{attribute} to be a valid liquid template" do
+          @template.send("#{attribute}=", "<%= invalid")
+          pending "TODO: validate template when handler = ERB" do
+            @template.should_not be_valid
+          end
+        end
+
+        it "ignores all variables wich are not in the #variable_names" do
+          @template.send("#{attribute}=", "<%= @fox %>, <%= @dog %>, <%= @unknown %>")
+          content = @template.send("render_#{attribute}", fox: 'fox', dog: 'dog', unknown: 'unknown')
+          content.should == 'fox, dog, '
+        end
       end
     end
   end
 
   describe "#render_body_html, when body_html is blank" do
-    before(:each) do
-      @template = FactoryGirl.create(:simple_nisetegami_template)
-      @template.body_html = ""
-      @template.body_text = "Quick {{ color_of_the_fox }} *{{fox}}* jumps over lazy **{{dog}}**."
-      Nisetegami.configure { |c| c.register @template[:mailer], @template.action, fox: 'String', dog: 'String', color_of_the_fox: 'String' }
+    context "with liquid" do
+      before(:each) do
+        @template = FactoryGirl.create(:simple_nisetegami_liquid_template)
+        @template.body_html = ""
+        @template.body_text = "Quick {{ color_of_the_fox }} *{{fox}}* jumps over lazy **{{dog}}**."
+        Nisetegami.configure { |c| c.register @template[:mailer], @template.action, fox: 'String', dog: 'String', color_of_the_fox: 'String' }
+      end
+
+      subject { @template.send(:render_body_html, fox: 'fox', dog: 'dog', color_of_the_fox: 'brown') }
+
+      it "renders HTML using markdown, if only_text is false" do
+        @template.only_text = false
+        should == "<p>Quick brown <em>fox</em> jumps over lazy <strong>dog</strong>.</p>\n"
+      end
+
+      it "returns nil otherwise" do
+        @template.only_text = true
+        should be_nil
+      end
     end
 
-    subject { @template.send(:render_body_html, fox: 'fox', dog: 'dog', color_of_the_fox: 'brown') }
+    context "with erb" do
+       before(:each) do
+        @template = FactoryGirl.create(:simple_nisetegami_erb_template)
+        @template.body_html = ""
+        @template.body_text = "Quick <%= @color_of_the_fox %> *<%= @fox %>* jumps over lazy **<%= @dog %>**."
+        Nisetegami.configure { |c| c.register @template[:mailer], @template.action, fox: 'String', dog: 'String', color_of_the_fox: 'String' }
+      end
 
-    it "renders HTML using markdown, if only_text is false" do
-      @template.only_text = false
-      should == "<p>Quick brown <em>fox</em> jumps over lazy <strong>dog</strong>.</p>\n"
-    end
+      subject { @template.send(:render_body_html, fox: 'fox', dog: 'dog', color_of_the_fox: 'brown') }
 
-    it "returns nil otherwise" do
-      @template.only_text = true
-      should be_nil
+      it "renders HTML using markdown, if only_text is false" do
+        @template.only_text = false
+        should == "<p>Quick brown <em>fox</em> jumps over lazy <strong>dog</strong>.</p>\n"
+      end
+
+      it "returns nil otherwise" do
+        @template.only_text = true
+        should be_nil
+      end
     end
   end
 
@@ -114,9 +163,18 @@ describe Nisetegami::Template do
       @template.message(@recipient, fox: 'fox', dog: 'dog').to.should == [@recipient]
     end
 
-    it "renders subject" do
-      @template.update_attributes(subject: '{{ fox }} and {{ dog }}')
-      @template.message(@recipient, dog: 'dog', fox: 'fox').subject.should == 'fox and dog'
+    context "with liquid" do
+      it "renders subject" do
+        @template.update_attributes(subject: '{{ fox }} and {{ dog }}')
+        @template.message(@recipient, dog: 'paladin', fox: 'scribe').subject.should == 'scribe and paladin'
+      end
+    end
+
+    context "with erb" do
+      it "renders subject" do
+        @template.update_attributes(subject: '<%= @fox %> and <%= @dog %>', handler: 'erb')
+        @template.message(@recipient, dog: 'paladin', fox: 'scribe').subject.should == 'scribe and paladin'
+      end
     end
 
     context "when format of the template is HTML" do
