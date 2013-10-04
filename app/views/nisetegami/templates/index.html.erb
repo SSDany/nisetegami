@@ -12,7 +12,7 @@
       <thead>
       <%= render "delete_button" %>
       <tr>
-        <%- %w(name mailer action subject from reply_to enabled only_text).each do |attr| %>
+        <%- %w(name mailer action enabled only_text).each do |attr| %>
           <th><%= Nisetegami::Template.human_attribute_name(attr) %></th>
         <% end %>
         <th><%= t('.edit') %></th>
