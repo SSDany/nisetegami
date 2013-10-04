@@ -2,9 +2,17 @@ module Nisetegami
   module ActionMailerExtensions
     extend ActiveSupport::Concern
 
+    def initialize(*args, &block)
+      unless self.class._view_paths.include?(ARTemplateResolver.instance)
+        self.class.prepend_view_path ARTemplateResolver.instance
+        self.class.prepend_view_path "#{Rails.root}/app/views/nisetegami"
+      end
+      super
+    end
+
     included do
-      append_view_path ARTemplateResolver.instance
-      append_view_path "#{Rails.root}/app/views/nisetegami"
+      #prepend_view_path ARTemplateResolver.instance
+      #prepend_view_path "#{Rails.root}/app/views/nisetegami"
       alias_method_chain :collect_responses_and_parts_order, :required_parts_order
       alias_method_chain :mail, :template
       alias_method_chain :render, :layout
@@ -32,10 +40,7 @@ module Nisetegami
 
     def mail_with_template(headers = {}, &block)
       def try_decorate(var)
-        if var.class != (casted = Nisetegami.cast[var.class])
-          var = casted.new(var)
-        end
-        var
+        var.instance_of?(casted = Nisetegami.cast[var.class]) ? var : casted.new(var)
       end
 
       if @_ar_template = ARTemplateResolver.instance.find_ar_template(self.class.to_s, action_name)
