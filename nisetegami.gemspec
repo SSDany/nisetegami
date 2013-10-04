@@ -19,6 +19,9 @@ Gem::Specification.new do |s|
   s.add_dependency 'roadie', '>= 2.3.1'
   s.add_dependency 'liquid'
   s.add_dependency 'redcarpet'
+  s.add_dependency 'bootstrap-sass', '~> 2.1.1.0'
+  s.add_dependency 'sass-rails'
+  s.add_dependency 'coffee-script'
 
   s.add_development_dependency 'sqlite3'
   s.add_development_dependency 'rails', '~> 3.2'
