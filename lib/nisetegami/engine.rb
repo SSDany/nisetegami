@@ -12,5 +12,11 @@ module Nisetegami
       Nisetegami.class_variable_set(:@@layouts_path, Rails.root.join('app/views/nisetegami/layouts').to_s)
     end
 
+    config.to_prepare do
+      Dir.glob("#{Rails.root}/app/decorators/nisetegami/**/*_decorator*.rb").each do |decorator|
+        require_dependency(decorator)
+      end
+    end
+
   end
 end

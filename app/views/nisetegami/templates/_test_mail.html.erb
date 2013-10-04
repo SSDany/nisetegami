@@ -2,6 +2,7 @@
   <h3><%= t('.title') %></h3>
 
   <%= label_tag :recipient, t('.recipient') %>
+  <%= label_tag :recipient, t('.current_user') %>
   <%= text_field_tag :recipient %>
 
   <%- if template.variable_mapping.present? %>

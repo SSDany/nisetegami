@@ -44,7 +44,7 @@ module Nisetegami
       message = unless params[:recipient] =~ Nisetegami.email_re
           {alert: t('nisetegami.templates.wrong_email')}
         else
-          template.message(params[:recipient], params[:template]).deliver
+          template.message(current_user.email, params[:template]).deliver
           {notice: t('nisetegami.templates.test_email_delivered')}
         end
       redirect_to edit_template_path(template), message
