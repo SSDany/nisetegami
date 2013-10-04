@@ -8,10 +8,9 @@ jQuery ->
     mailer = $(@).val()
     actionSelect = $('#mailer_action')
     if mailer != ''
-      loc = window.location
-      port = unless loc.port == 80 then ":#{loc.port}" else ''
-      $.post "#{loc.protocol}//#{loc.hostname}#{port}#{loc.pathname}actions", mailer: mailer, (data) ->
-        console.log data
+      location = window.location
+      port = unless location.port == 80 then ":#{location.port}" else ''
+      $.post "#{location.protocol}//#{location.hostname}#{port}#{location.pathname}/actions", mailer: mailer, (data) ->
         actionSelect.append($('<option></option>').val(action).text(action)) for action in data
     else
       actionSelect.text('')

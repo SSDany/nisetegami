@@ -16,7 +16,7 @@ module Nisetegami
     end
 
     def actions
-      render json: [''] + Nisetegami.mapping.actions(params[:mailer])
+      render json: [''] + Nisetegami::Template.by_mailer(params[:mailer]).map(&:action)
     end
 
     def edit
