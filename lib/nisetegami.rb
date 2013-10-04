@@ -24,8 +24,8 @@ module Nisetegami
 
   mattr_reader :email_re
   @@email_re = /[-a-z0-9_+\.]+@([-a-z0-9]+\.)+[a-z0-9]{2,}/
-  
-  mattr_accessor :auth_filter 
+
+  mattr_accessor :auth_filter, :base_controller_class
 
   def self.configure
     yield self

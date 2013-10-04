@@ -1,7 +1,7 @@
-require_dependency "nisetegami/application_controller"
+require "nisetegami/application_controller"
 
 module Nisetegami
-  class TemplatesController < ApplicationController
+  class TemplatesController < base_controller_class || ApplicationController
     before_filter Nisetegami.auth_filter if Nisetegami.auth_filter
 
     def index
@@ -49,5 +49,14 @@ module Nisetegami
         end
       redirect_to edit_template_path(template), message
     end
+
+    protected
+
+    def url_for(options = nil)
+      super options
+    rescue ActionController::RoutingError
+      main_app.url_for(options)
+    end
+
   end
 end
