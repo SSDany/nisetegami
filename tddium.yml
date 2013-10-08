@@ -1,0 +1,14 @@
+:tddium:
+  :environment:                            # Environment variables to set when services & tests run
+    TZ: GMT                                # Set time zone
+    RAILS_LOG_LEVEL: '2'                   # Default is 4; 0-3 are more verbose
+    LOCALE: ru_RU                          # Set locale for tests
+    LC_CTYPE: ru_RU.UTF-8                  # Set LC_TYPE for tests
+  :postgresql: false
+  :sqlite:
+    :adapter: sqlite3
+    :config:
+      pool: 5
+      timeout: 5000
+  :rake:
+    :rails_env: test  # Set ruby RAILS_ENV, PADRINO_ENV, etc. for startup hooks

@@ -1,0 +1,6 @@
+test:
+  encoding: unicode
+  adapter: sqlite3
+  database: <%= ENV['TDDIUM_DB_NAME'] %>
+  username: <%= ENV['TDDIUM_DB_USER'] %>
+  password: <%= ENV['TDDIUM_DB_PASSWORD'] %>

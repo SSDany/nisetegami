@@ -31,5 +31,18 @@ RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.pattern = FileList['spec/**/*_spec.rb']
 end
 
+namespace :tddium do
+  desc "tddium environment db setup task"
+  task :db_hook do
+    system("cd spec/dummy/config && cp database.tddium.yml database.yml")
+    Rake::Task["db:create:all"].invoke
+    if File.exists?(File.join(Rails.root, "db", "schema.rb"))
+      Rake::Task['db:schema:load'].invoke
+    else
+      Rake::Task['db:migrate'].invoke
+    end
+  end
+end
+
 desc 'Default: Run all specs.'
 task default: :spec
