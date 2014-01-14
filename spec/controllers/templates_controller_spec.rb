@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Nisetegami::TemplatesController do
+
+  before { @controller.stub_chain(:current_user, :email).and_return('example@example.org') }
   let!(:template) { FactoryGirl.create(:simple_nisetegami_template) }
 
   describe "#index" do
@@ -22,7 +24,7 @@ describe Nisetegami::TemplatesController do
   it "renders actions as json" do
     post :actions, mailer: 'Nisetegami::TestMailer', use_route: :nisetegami
     response.should be_success
-    response.body.should == ([''] + Nisetegami.mapping.actions('Nisetegami::TestMailer')).to_json
+    response.body.should == ([''] + Nisetegami::Template.uniq.pluck(:action)).to_json
   end
 
   it "renders edit page" do
