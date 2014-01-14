@@ -11,8 +11,8 @@
 </tr>
 <tr>
   <td><%= text_field_tag :name, params[:name] %></td>
-  <td><%= select_tag :mailer, options_for_select(([''] + @templates.map(&:mailer).uniq), params[:mailer]) %></td>
-  <td><%= select_tag :mailer_action, options_for_select(params[:mailer].blank? ? '' : ([''] + Nisetegami::Template.where(mailer: params[:mailer]).map(&:action)), params[:mailer_action]) %></td>
+  <td><%= select_tag :mailer, options_for_select(([''] + Nisetegami::Template.uniq.pluck(:mailer)), params[:mailer]) %></td>
+  <td><%= select_tag :mailer_action, options_for_select(params[:mailer].blank? ? '' : ([''] + Nisetegami::Template.where(mailer: params[:mailer]).uniq.pluck(:action)), params[:mailer_action]) %></td>
   <td><%= select_tag :enabled, options_for_select([[''], [t('.enabled'), true], [t('.disabled'), false]], params[:enabled]) %></td>
   <td><%= submit_tag t('.filter'), class: 'btn btn-primary' %></td>
   <td><%= content_tag :button, t('.reset'), class: 'reset btn btn-inverse' %></td>
