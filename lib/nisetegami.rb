@@ -27,6 +27,10 @@ module Nisetegami
 
   mattr_accessor :auth_filter, :base_controller_class
 
+  # fallback to FS when template is disabled
+  mattr_accessor :fallback
+  @@fallback = false
+
   def self.configure
     yield self
   end
