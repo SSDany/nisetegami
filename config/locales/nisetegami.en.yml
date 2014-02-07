@@ -27,6 +27,7 @@ en:
     templates:
       wrong_email: "Wrong email address"
       test_email_delivered: "Test email delivered"
+      test_email_not_delivered: "Test email not delivered"
       destroyed: "Templates %{templates} have been destroyed"
       updated: "Template %{template} has been updated"
       index:
