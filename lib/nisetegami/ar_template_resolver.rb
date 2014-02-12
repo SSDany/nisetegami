@@ -21,7 +21,7 @@ class Nisetegami::ARTemplateResolver < ActionView::Resolver
 
   def find_templates(name, prefix, partial, details)
     ar_template = find_ar_template(prefix, name)
-    if ar_template.blank? || (Nisetegami.fallback && !ar_template.enabled)
+    if ar_template.blank? || ar_template.use_fallback?
       []
     else
       formats = []

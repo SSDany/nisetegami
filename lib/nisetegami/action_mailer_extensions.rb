@@ -30,7 +30,7 @@ module Nisetegami
 
     def render_with_layout(*args, &block)
       options = args.first
-      if !options[:layout] && @_ar_template
+      if !options[:layout] && @_ar_template && !@_ar_template.use_fallback?
         format = options[:template].identifier.include?('html') ? 'html' : 'text'
         layout = @_ar_template.send("layout_#{format}")
         options[:layout] = layout unless layout.blank?

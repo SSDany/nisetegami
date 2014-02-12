@@ -137,6 +137,10 @@ class Nisetegami::Template < ActiveRecord::Base
     !only_text? && body_html.blank?
   end
 
+  def use_fallback?
+    Nisetegami.fallback && !enabled?
+  end
+
   private
 
   def set_defaults
