@@ -12,7 +12,7 @@
     <thead>
     <%= render "delete_button" %>
     <tr>
-      <%- %w(name mailer action enabled only_text).each do |attr| %>
+      <%- %w(id name mailer action subject enabled only_text).each do |attr| %>
         <th><%= Nisetegami::Template.human_attribute_name(attr) %></th>
       <% end %>
       <th><%= t('.edit') %></th>
@@ -22,7 +22,7 @@
     <tbody>
       <%- @templates.map { |t| Nisetegami::TemplatePresenter.new(t) }.each do |t| %>
       <tr>
-        <%- %w(name mailer action enabled only_text).each do |attr| %>
+        <%- %w(id name mailer action subject enabled only_text).each do |attr| %>
           <td><%= t.send(attr) %></td>
         <% end %>
         <td><%= link_to t('.edit'), edit_template_path(t) %></td>
